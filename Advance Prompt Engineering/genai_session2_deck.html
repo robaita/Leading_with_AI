@@ -1,0 +1,1291 @@
+<meta charset="utf-8">
+<title>Prompting Like a Pro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper:#eeede7;
+  --paper-raised:#f8f7f2;
+  --paper-sunken:#e6e4dc;
+  --ink:#1c232b;
+  --ink-soft:#4a535c;
+  --ink-faint:#7b838a;
+  --line:#d8d6cd;
+  --teal:#1f6f6b;
+  --teal-deep:#154c49;
+  --teal-bright:#2c8480;
+  --teal-wash:#dfe9e6;
+  --amber:#a86412;
+  --amber-wash:#f1e2cb;
+  --sage:#456b3f;
+  --sage-wash:#e2e9dd;
+  --rose:#95312c;
+  --rose-wash:#f0dfdb;
+  --shadow: 0 1px 2px rgba(28,35,43,0.06), 0 10px 30px -14px rgba(28,35,43,0.3);
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: 'Public Sans', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#14181c; --paper-raised:#1b2126; --paper-sunken:#101417;
+    --ink:#eae6dc; --ink-soft:#b7bcc2; --ink-faint:#7d848b; --line:#2c343b;
+    --teal:#5fb3ac; --teal-deep:#8fd0c9; --teal-bright:#6cc3bc; --teal-wash:#1c2c2a;
+    --amber:#e0a552; --amber-wash:#2c2416; --sage:#8fbf85; --sage-wash:#1e2a1c;
+    --rose:#e0918c; --rose-wash:#2c1e1c;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 14px 34px -16px rgba(0,0,0,0.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14181c; --paper-raised:#1b2126; --paper-sunken:#101417;
+  --ink:#eae6dc; --ink-soft:#b7bcc2; --ink-faint:#7d848b; --line:#2c343b;
+  --teal:#5fb3ac; --teal-deep:#8fd0c9; --teal-bright:#6cc3bc; --teal-wash:#1c2c2a;
+  --amber:#e0a552; --amber-wash:#2c2416; --sage:#8fbf85; --sage-wash:#1e2a1c;
+  --rose:#e0918c; --rose-wash:#2c1e1c;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 14px 34px -16px rgba(0,0,0,0.7);
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+}
+
+*{box-sizing:border-box;}
+html,body{ height:100%; }
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body);
+  line-height:1.55; font-size:17px; -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+::selection{ background:var(--teal); color:#fff; }
+a{ color:var(--teal-deep); }
+
+/* ================= deck shell ================= */
+#deck{ position:relative; width:100%; height:100vh; }
+.slide{
+  position:absolute; inset:0; display:none; flex-direction:column; justify-content:center; justify-content:safe center;
+  padding: 3.6rem 4.5vw 4.4rem; overflow-y:auto;
+}
+.slide.active{ display:flex; }
+.slide-inner{ max-width:1320px; margin:0 auto; width:100%; }
+.slide.center .slide-inner{ margin:auto; }
+
+@keyframes riseIn{ from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:none; } }
+.slide.active .kicker, .slide.active .headline, .slide.active .lede{ animation:riseIn .55s ease both; }
+.slide.active .lede{ animation-delay:.08s; }
+.slide.active .anim-block{ animation:riseIn .6s ease both; animation-delay:.14s; }
+
+.reveal-grid > *{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.reveal-grid.show > *{ opacity:1; transform:none; }
+.reveal-grid > *:nth-child(1){ transition-delay:.04s; } .reveal-grid > *:nth-child(2){ transition-delay:.09s; }
+.reveal-grid > *:nth-child(3){ transition-delay:.14s; } .reveal-grid > *:nth-child(4){ transition-delay:.19s; }
+.reveal-grid > *:nth-child(5){ transition-delay:.24s; } .reveal-grid > *:nth-child(6){ transition-delay:.29s; }
+.reveal-grid > *:nth-child(7){ transition-delay:.34s; } .reveal-grid > *:nth-child(8){ transition-delay:.39s; }
+.reveal-grid > *:nth-child(9){ transition-delay:.44s; } .reveal-grid > *:nth-child(10){ transition-delay:.49s; }
+
+.kicker{
+  font-family:var(--font-mono); font-size:0.92rem; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--teal); font-weight:600; margin:0 0 0.9rem; display:flex; align-items:center; gap:0.55em;
+}
+.kicker::before{ content:""; width:9px; height:9px; border-radius:50%; background:var(--teal); }
+h1.headline{
+  font-family:var(--font-display); font-weight:600; font-size:clamp(2.3rem,4.6vw,3.6rem);
+  margin:0 0 0.9rem; text-wrap:balance; letter-spacing:-0.01em; line-height:1.1;
+}
+.lede{ font-size:1.32rem; line-height:1.55; color:var(--ink-soft); max-width:70ch; margin:0 0 1.5rem; }
+
+#topbar{
+  position:fixed; top:0; left:0; right:0; height:2.8rem; display:flex; align-items:center;
+  justify-content:space-between; padding:0 1.4rem; font-family:var(--font-mono); font-size:0.8rem;
+  color:var(--ink-faint); letter-spacing:0.06em; z-index:40; pointer-events:none;
+}
+#topbar b{ color:var(--ink-soft); font-weight:600; }
+#navbar{
+  position:fixed; bottom:0; left:0; right:0; height:4rem; display:flex; align-items:center;
+  gap:0.9rem; padding:0 1.2rem; background:var(--paper-raised); border-top:1px solid var(--line); z-index:50;
+}
+.navbtn{
+  font-family:var(--font-mono); font-size:0.85rem; letter-spacing:0.04em; color:var(--ink);
+  background:var(--paper); border:1px solid var(--line); border-radius:7px; padding:0.5rem 0.9rem;
+  cursor:pointer; display:flex; align-items:center; gap:0.35em;
+}
+.navbtn:hover{ border-color:var(--teal); color:var(--teal-deep); }
+.navbtn:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+.progress-wrap{ flex:1; height:7px; background:var(--paper-sunken); border-radius:99px; overflow:hidden; }
+.progress-fill{ height:100%; background:var(--teal); border-radius:99px; transition:width .35s ease; }
+.slide-count{ font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-faint); white-space:nowrap; }
+
+#tocveil{ position:fixed; inset:0; background:rgba(20,24,28,0.35); z-index:60; display:none; }
+#tocveil.open{ display:block; }
+#toc{
+  position:fixed; top:0; bottom:0; left:0; width:min(360px,86vw); background:var(--paper-raised);
+  border-right:1px solid var(--line); z-index:61; transform:translateX(-100%); transition:transform .3s ease;
+  overflow-y:auto; padding:1.4rem 1.2rem 2rem;
+}
+#toc.open{ transform:none; }
+#toc h3{ font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-faint); margin:1.1rem 0 0.4rem; }
+#toc h3:first-child{ margin-top:0.2rem; }
+.toc-item{
+  display:block; width:100%; text-align:left; background:none; border:none; padding:0.45rem 0.55rem;
+  border-radius:6px; color:var(--ink-soft); font-size:0.94rem; cursor:pointer; font-family:var(--font-body);
+}
+.toc-item:hover{ background:var(--teal-wash); color:var(--ink); }
+.toc-item.current{ background:var(--teal); color:#fff; }
+
+/* ================= components ================= */
+.story-quote{
+  font-family:var(--font-display); font-style:italic; font-size:1.62rem; line-height:1.48;
+  color:var(--ink); border-left:4px solid var(--teal); padding:0.2rem 0 0.2rem 1.3rem; margin:0.7rem 0 1.6rem;
+  max-width:58ch;
+}
+.example-box{ background:var(--amber-wash); border-radius:12px; padding:1.15rem 1.4rem; margin:1rem 0; border-left:4px solid var(--amber); }
+.example-box .lbl{ font-family:var(--font-mono); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--amber); font-weight:700; display:block; margin-bottom:0.45rem; }
+.example-box p{ margin:0.3rem 0; color:var(--ink); font-size:1.12rem; line-height:1.5; }
+
+.presenter-note{
+  position:absolute; top:1.3rem; right:1.6rem; font-family:var(--font-mono); font-size:0.76rem;
+  color:var(--ink-faint); border:1px dashed var(--line); border-radius:6px; padding:0.4rem 0.7rem; max-width:260px;
+  text-align:right;
+}
+.presenter-note b{ color:var(--ink-soft); }
+.presenter-note.inline{ position:static; display:block; text-align:left; max-width:100%; padding:0.7rem 0.9rem; }
+
+.further-reading{ margin-top:1.5rem; padding-top:1.2rem; border-top:1px solid var(--line); }
+.further-reading .fr-label{ font-family:var(--font-mono); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-faint); margin-bottom:0.7rem; display:block; }
+.fr-links{ display:flex; flex-wrap:wrap; gap:0.6rem; }
+.fr-links a{ font-family:var(--font-mono); font-size:0.85rem; color:var(--teal-deep); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:0.45rem 0.85rem; background:var(--paper-raised); }
+.fr-links a:hover{ border-color:var(--teal); background:var(--teal-wash); }
+
+.usecase-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-top:1.1rem; }
+.usecase-grid.cols-2{ grid-template-columns:1fr 1fr; }
+@media(max-width:980px){ .usecase-grid, .usecase-grid.cols-2{ grid-template-columns:1fr; } }
+.usecase-col{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:14px; padding:1.2rem 1.3rem; display:flex; flex-direction:column; gap:0.85rem; }
+.usecase-grid:not(.cols-2) .usecase-col:nth-child(2){ border-top-color:var(--amber); }
+.usecase-grid:not(.cols-2) .usecase-col:nth-child(3){ border-top-color:var(--sage); }
+.usecase-grid.cols-2 .usecase-col:nth-child(2){ border-top-color:var(--amber); }
+.usecase-col h4{ margin:0; font-family:var(--font-display); font-weight:600; font-size:1.2rem; }
+.uc-label{ font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:0.35rem; display:block; }
+.uc-section p{ margin:0; font-size:0.94rem; color:var(--ink-soft); line-height:1.48; }
+.uc-outcome{ background:var(--teal-wash); border-radius:9px; padding:0.75rem 0.85rem; }
+.uc-outcome p{ color:var(--ink); font-size:0.9rem; }
+
+.prompt-block{ position:relative; background:var(--paper-sunken); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem; }
+.prompt-block .prompt-text{ margin:0; font-family:var(--font-mono); font-size:0.82rem; line-height:1.55; color:var(--ink); white-space:pre-wrap; padding-right:3.4rem; }
+.copy-btn{ position:absolute; top:0.6rem; right:0.6rem; font-family:var(--font-mono); font-size:0.7rem; background:var(--paper-raised); border:1px solid var(--line); border-radius:6px; padding:0.3rem 0.6rem; cursor:pointer; color:var(--ink-soft); }
+.copy-btn:hover{ border-color:var(--teal); color:var(--teal-deep); }
+.copy-btn.copied{ background:var(--teal); color:#fff; border-color:var(--teal); }
+.rtccf-block.mini{ padding:0.5rem 0.85rem; font-size:0.8rem; opacity:1; transform:none; }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; }
+@media (max-width:760px){ .two-col{ grid-template-columns:1fr; } }
+.compare-card{ background:var(--paper-raised); border:1px solid var(--line); border-left:4px solid var(--ink-faint); border-radius:12px; padding:1.3rem 1.5rem; }
+.compare-card .clbl{ font-family:var(--font-mono); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:0.6rem; display:block; }
+.compare-card.strong{ border-left-color:var(--teal); box-shadow:var(--shadow); }
+.compare-card.strong .clbl{ color:var(--teal-deep); }
+.compare-card p{ margin:0.4rem 0; font-size:1.12rem; line-height:1.5; color:var(--ink-soft); }
+.compare-card p.out{ font-style:italic; color:var(--ink); }
+
+.domain-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.1rem; margin:1.2rem 0; }
+@media(max-width:760px){ .domain-grid{ grid-template-columns:1fr; } }
+.domain-card{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:12px; padding:1.3rem 1.4rem; }
+.domain-card:nth-child(4n+2){ border-top-color:var(--amber); }
+.domain-card:nth-child(4n+3){ border-top-color:var(--sage); }
+.domain-card:nth-child(4n+4){ border-top-color:var(--rose); }
+.domain-card .dlabel{ font-family:var(--font-mono); font-size:0.82rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal-deep); margin-bottom:0.5rem; display:block; }
+.domain-card p{ margin:0; font-size:1.08rem; line-height:1.5; color:var(--ink-soft); }
+.domain-card p b{ color:var(--ink); }
+
+.tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:1.1rem 0; box-shadow:var(--shadow); }
+table{ width:100%; border-collapse:collapse; font-size:1.03rem; min-width:560px; }
+thead th{ text-align:left; background:var(--paper-raised); font-family:var(--font-mono); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); padding:0.75rem 0.95rem; border-bottom:1px solid var(--line); }
+tbody td{ padding:0.8rem 0.95rem; border-bottom:1px solid var(--line); color:var(--ink-soft); vertical-align:top; }
+tbody tr:last-child td{ border-bottom:none; }
+tbody td b{ color:var(--ink); }
+td.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+.timeline-anim{ position:relative; margin:1.5rem 0; padding-left:2rem; max-height:58vh; overflow-y:auto; }
+.timeline-anim::before{ content:""; position:absolute; left:6px; top:8px; bottom:8px; width:3px; background:var(--line); border-radius:2px; }
+.tl-item{ position:relative; padding-bottom:1.4rem; opacity:0; transform:translateY(14px); transition:opacity .45s ease, transform .45s ease; }
+.timeline-anim.show .tl-item{ opacity:1; transform:none; }
+.tl-item:nth-child(1){ transition-delay:.03s; } .tl-item:nth-child(2){ transition-delay:.11s; }
+.tl-item:nth-child(3){ transition-delay:.19s; } .tl-item:nth-child(4){ transition-delay:.27s; }
+.tl-item::before{ content:""; position:absolute; left:-2rem; top:4px; width:15px; height:15px; border-radius:50%; background:var(--paper); border:3px solid var(--teal); }
+.tl-year{ font-family:var(--font-mono); font-size:0.92rem; color:var(--teal-deep); font-weight:700; }
+.tl-item h4{ margin:0.2rem 0 0.25rem; font-size:1.22rem; font-weight:700; }
+.tl-item p{ margin:0; color:var(--ink-soft); font-size:1.05rem; line-height:1.5; }
+
+.rtccf-chain{ display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; margin:1.3rem 0 1.6rem; }
+.rtccf-block{ padding:0.95rem 1.3rem; border-radius:10px; font-family:var(--font-mono); font-weight:600; font-size:1.05rem; color:#fff;
+  opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; box-shadow:var(--shadow); }
+.rtccf-chain.show .rtccf-block{ opacity:1; transform:none; }
+.rtccf-block:nth-child(1){ background:#b5651d; transition-delay:.05s; }
+.rtccf-block:nth-child(3){ background:#5c6570; transition-delay:.15s; }
+.rtccf-block:nth-child(5){ background:var(--amber); transition-delay:.25s; }
+.rtccf-block:nth-child(7){ background:var(--teal-bright); transition-delay:.35s; }
+.rtccf-block:nth-child(9){ background:var(--sage); transition-delay:.45s; }
+.rtccf-arrow{ color:var(--ink-faint); font-family:var(--font-mono); font-size:1.3rem; opacity:0; transition:opacity .4s ease; }
+.rtccf-chain.show .rtccf-arrow{ opacity:1; }
+
+.milestones{ display:flex; align-items:stretch; gap:0; margin:1.6rem 0; flex-wrap:wrap; }
+.ms-card{ flex:1; min-width:220px; background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--ink-faint); border-radius:13px; padding:1.4rem 1.5rem; position:relative; }
+.ms-card + .ms-card{ margin-left:1.1rem; }
+.ms-card:nth-child(2){ border-top-color:var(--amber); }
+.ms-card:nth-child(3){ border-top-color:var(--sage); }
+.ms-card.here{ border-top-color:var(--teal); background:var(--teal-wash); }
+.ms-num{ font-family:var(--font-mono); font-size:0.82rem; color:var(--ink-faint); }
+.ms-card.here .ms-num{ color:var(--teal-deep); }
+.ms-card h4{ margin:0.4rem 0 0.4rem; font-size:1.2rem; }
+.ms-card p{ margin:0; font-size:1.02rem; line-height:1.45; color:var(--ink-soft); }
+@media(max-width:760px){ .ms-card + .ms-card{ margin-left:0; margin-top:1.1rem; } .milestones{ flex-direction:column; } }
+
+.bio-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:2.6rem; align-items:start; margin-top:0.8rem; }
+@media(max-width:820px){ .bio-grid{ grid-template-columns:1fr; } }
+.cred-list{ list-style:none; margin:0; padding:0; display:grid; gap:1rem; }
+.cred-list li{ position:relative; padding-left:1.8rem; font-size:1.15rem; color:var(--ink-soft); line-height:1.5; }
+.cred-list li::before{ content:""; position:absolute; left:0; top:0.35em; width:11px; height:11px; border:2.5px solid var(--teal); border-radius:3px; }
+.cred-list li b{ color:var(--ink); }
+.cred-list li.cred-note{ font-style:italic; color:var(--ink-faint); }
+.cred-list li.cred-note::before{ border-color:var(--ink-faint); }
+
+.bio-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:1.6rem 1.7rem; box-shadow:var(--shadow); }
+.bio-avatar{ width:76px; height:76px; border-radius:50%; object-fit:cover; display:block; margin-bottom:1.1rem; box-shadow:0 0 0 3px var(--paper-raised), 0 0 0 5px var(--teal-wash); }
+.bio-name{ font-family:var(--font-display); font-weight:600; font-size:1.4rem; margin-bottom:0.5rem; }
+.bio-role{ font-size:1rem; color:var(--ink-soft); line-height:1.55; margin-bottom:0.9rem; }
+.bio-loc{ font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-faint); letter-spacing:0.03em; margin-bottom:1rem; }
+.bio-links{ display:flex; flex-direction:column; gap:0.45rem; border-top:1px solid var(--line); padding-top:0.9rem; }
+.bio-links a{ font-family:var(--font-mono); font-size:0.9rem; color:var(--teal-deep); text-decoration:none; border-bottom:1px solid var(--teal-wash); width:fit-content; }
+.bio-links a:hover{ border-bottom-color:var(--teal); }
+
+.logo-strip{ display:flex; flex-wrap:wrap; gap:0.7rem; margin-top:2.1rem; padding-top:1.5rem; border-top:1px solid var(--line); }
+.logo-chip{ font-family:var(--font-mono); font-size:0.88rem; letter-spacing:0.03em; color:var(--ink-faint); border:1px solid var(--line); border-radius:8px; padding:0.5rem 0.95rem; background:var(--paper-raised); }
+.logo-chip.accent{ color:var(--teal-deep); border-color:var(--teal); }
+
+.pillars{ display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin:1.4rem 0; }
+@media(max-width:820px){ .pillars{ grid-template-columns:repeat(2,1fr); } }
+.pillar{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:13px; padding:1.3rem; text-align:center; }
+.pillar:nth-child(8n+2){ border-top-color:var(--amber); }
+.pillar:nth-child(8n+3){ border-top-color:var(--sage); }
+.pillar:nth-child(8n+4){ border-top-color:var(--rose); }
+.pillar:nth-child(8n+5){ border-top-color:var(--teal-bright); }
+.pillar:nth-child(8n+6){ border-top-color:#5c6570; }
+.pillar:nth-child(8n+7){ border-top-color:var(--teal-deep); }
+.pillar:nth-child(8n+8){ border-top-color:var(--amber); }
+.pillar .pnum{ font-family:var(--font-mono); color:var(--teal-deep); font-weight:700; font-size:0.92rem; }
+.pillar h4{ margin:0.5rem 0 0.3rem; font-size:1.15rem; }
+.pillar p{ margin:0; font-size:0.98rem; line-height:1.4; color:var(--ink-soft); }
+
+.agenda-list{ list-style:none; margin:1.2rem 0; padding:0; display:grid; gap:0.7rem; }
+.agenda-list li{ display:grid; grid-template-columns:2.4rem 1fr; gap:0.8rem; align-items:baseline; font-size:1.18rem; line-height:1.45; color:var(--ink-soft); }
+.agenda-list li b{ color:var(--ink); }
+.agenda-list .an{ font-family:var(--font-mono); color:var(--teal-deep); font-weight:700; }
+.agenda-list.small li{ font-size:1rem; }
+
+.closing-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1.6rem; margin-top:1.2rem; }
+@media(max-width:700px){ .closing-cols{ grid-template-columns:1fr; } }
+.closing-cols .cc-head{ font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--teal-deep); margin-bottom:0.6rem; }
+
+.replay-btn{
+  font-family:var(--font-mono); font-size:0.85rem; color:var(--teal-deep); background:none; border:1px solid var(--teal);
+  border-radius:8px; padding:0.4rem 0.85rem; cursor:pointer; align-self:flex-start; margin-top:0.9rem;
+}
+
+/* ---------- incident citation cards ---------- */
+.incident-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:0.9rem; margin:1.1rem 0; }
+@media(max-width:760px){ .incident-grid{ grid-template-columns:1fr; } }
+.incident-card{ display:block; background:var(--paper-raised); border:1px solid var(--line); border-left:3px solid var(--rose); border-radius:11px; padding:1rem 1.1rem; text-decoration:none; color:inherit; transition:transform .15s ease, box-shadow .15s ease, border-left-color .15s ease; }
+a.incident-card:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.09); border-left-color:var(--teal); }
+.incident-card .isrc{ font-family:var(--font-mono); font-size:0.72rem; color:var(--teal-deep); text-transform:uppercase; letter-spacing:.05em; margin-bottom:0.4rem; display:block; }
+.incident-card .isrc::after{ content:"\2197"; margin-left:0.3rem; opacity:.65; }
+.incident-card p{ margin:0; font-size:0.95rem; color:var(--ink-soft); line-height:1.48; }
+
+/* ---------- two-part outline block ---------- */
+.split-outline{ display:grid; grid-template-columns:1fr 1fr; gap:1.6rem; margin-top:1rem; }
+@media(max-width:820px){ .split-outline{ grid-template-columns:1fr; } }
+.split-outline h3{ font-family:var(--font-display); font-size:1.1rem; margin:0 0 0.6rem; color:var(--teal-deep); }
+
+/* ---------- data-protection law cards ---------- */
+.law-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin:1.2rem 0; }
+@media(max-width:980px){ .law-grid{ grid-template-columns:1fr; } }
+.law-card{ background:var(--paper-raised); border:1px solid var(--line); border-top:4px solid var(--teal); border-radius:14px; padding:1.3rem 1.4rem; }
+.law-card:nth-child(2){ border-top-color:var(--amber); }
+.law-card:nth-child(3){ border-top-color:var(--sage); }
+.law-card h4{ font-family:var(--font-display); font-weight:600; font-size:1.25rem; margin:0 0 0.25rem; }
+.law-card .law-full{ font-size:0.86rem; color:var(--ink-faint); margin-bottom:0.6rem; display:block; line-height:1.4; }
+.law-card .law-region{ font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--teal-deep); background:var(--teal-wash); display:inline-block; padding:0.22rem 0.6rem; border-radius:99px; margin-bottom:0.8rem; }
+.law-card ul{ margin:0; padding-left:1.1rem; }
+.law-card li{ font-size:0.92rem; color:var(--ink-soft); line-height:1.5; margin:0.4rem 0; }
+.law-card li b{ color:var(--ink); }
+
+/* ---------- CoT step-flow diagram ---------- */
+.flow-diagram{ display:flex; flex-direction:column; margin:1.2rem 0; }
+.flow-step{ position:relative; display:flex; align-items:flex-start; gap:0.9rem; background:var(--paper-raised); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:10px; padding:0.85rem 1.15rem; }
+.flow-step.s2{ border-left-color:var(--amber); }
+.flow-step.s3{ border-left-color:var(--sage); }
+.flow-step.s4{ border-left-color:var(--rose); }
+.flow-step.s5{ border-left-color:var(--teal-bright); }
+.flow-step .fs-node{ flex:0 0 auto; width:1.95rem; height:1.95rem; margin-top:0.1rem; border-radius:50%; background:var(--teal); color:#fff; font-family:var(--font-mono); font-size:0.92rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.flow-step.s2 .fs-node{ background:var(--amber); }
+.flow-step.s3 .fs-node{ background:var(--sage); }
+.flow-step.s4 .fs-node{ background:var(--rose); }
+.flow-step.s5 .fs-node{ background:var(--teal-bright); }
+.flow-step .fs-num{ font-family:var(--font-mono); font-size:0.72rem; color:var(--teal-deep); text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:0.3rem; }
+.flow-step p{ margin:0; font-size:0.98rem; color:var(--ink); line-height:1.45; }
+.flow-connector{ display:flex; align-items:center; gap:0.6rem; padding-left:1.68rem; height:30px; }
+.flow-connector .fc-line{ stroke:var(--ink-faint); stroke-width:2; }
+.flow-connector .fc-head{ fill:var(--ink-faint); }
+.flow-connector .fc-tag{ font-family:var(--font-mono); font-size:0.68rem; color:var(--teal-deep); background:var(--teal-wash); padding:0.18rem 0.6rem; border-radius:99px; text-transform:uppercase; letter-spacing:.03em; }
+
+/* ---------- ToT tree diagram ---------- */
+.tree-svg{ width:100%; max-width:660px; height:auto; display:block; margin:0.6rem auto; }
+.tree-line{ stroke:var(--line); stroke-width:2; fill:none; }
+.tree-node rect{ fill:var(--paper-raised); stroke:var(--teal); stroke-width:1.5; }
+.tree-node.root rect{ fill:var(--teal-wash); stroke:var(--teal-deep); }
+.tree-node.synth rect{ fill:var(--teal-deep); stroke:none; }
+.tree-node text{ font-family:var(--font-mono); font-size:12.5px; fill:var(--ink); text-anchor:middle; }
+.tree-node.synth text{ fill:#fff; }
+</style>
+
+<div id="deck">
+
+  <!-- ============ PART 0 · ORIENTATION ============ -->
+
+  <section class="slide active" data-part="Orientation" data-title="Where you've been">
+    <div class="slide-inner">
+      <span class="kicker">The journey so far</span>
+      <h1 class="headline">Where You've Been</h1>
+      <p class="lede">Three milestones already sit behind you. Today opens the fourth.</p>
+      <div class="milestones">
+        <div class="ms-card">
+          <span class="ms-num">01</span>
+          <h4>Design Thinking</h4>
+          <p>Framing problems the way people actually experience them, before reaching for a solution.</p>
+        </div>
+        <div class="ms-card">
+          <span class="ms-num">02</span>
+          <h4>AI Masterclass Series</h4>
+          <p>with Dr. Shailesh Kumar &mdash; building the foundation for what AI is and where it fits in a business.</p>
+        </div>
+        <div class="ms-card">
+          <span class="ms-num">03 &middot; DONE</span>
+          <h4>Session 1: AI in Action</h4>
+          <p>The story of AI, how an LLM works, tokens &amp; cost, and the RTCCF prompting framework.</p>
+        </div>
+        <div class="ms-card here">
+          <span class="ms-num">04 &middot; YOU ARE HERE</span>
+          <h4>Session 2: Prompting Like a Pro</h4>
+          <p>Advanced techniques, then how to use all of it responsibly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Orientation" data-title="Presenter">
+    <div class="slide-inner">
+      <span class="kicker">Your instructor</span>
+      <h1 class="headline">Dr. Avinash Kumar Singh</h1>
+      <div class="bio-grid">
+        <ul class="cred-list reveal-grid">
+          <li><b>15+ years</b> of hands-on expertise in Machine Learning, Computer Vision, NLP, IoT, Robotics, and Generative AI.</li>
+          <li><b>Earned a Ph.D.</b> in Human-Robot Interaction from IIIT Allahabad in 2016.</li>
+          <li><b>Received postdoctoral fellowships</b> at Ume&aring; University, Sweden (2020) and Montpellier University, France (2021).</li>
+          <li><b>Authored 30+ research papers</b> in high-impact SCI journals and international conferences.</li>
+          <li class="cred-note">Unlearning, learning, making mistakes &hellip;</li>
+        </ul>
+        <div class="bio-card">
+          <img class="bio-avatar" src="data:image/jpeg;base64,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" alt="Dr. Avinash Kumar Singh">
+          <div class="bio-name">Dr. Avinash Kumar Singh</div>
+          <div class="bio-role">Senior AI Researcher @ Domyn<br>PhD Computer Vision &middot; Postdocs &mdash; Ume&aring; University (Sweden) &amp; Montpellier University (France)</div>
+          <div class="bio-loc">Hyderabad, Telangana, India</div>
+          <div class="bio-links">
+            <a href="https://www.linkedin.com/in/dr-avinash-kumar-singh-2a570a31/">linkedin.com/in/dr-avinash-kumar-singh</a>
+            <!-- <a href="https://www.robaita.com">robaita.com</a> -->
+          </div>
+        </div>
+      </div>
+      <div class="logo-strip reveal-grid">
+        <span class="logo-chip">IIIT Allahabad</span>
+        <span class="logo-chip">eClerx</span>
+        <span class="logo-chip">HCLTech</span>
+        <span class="logo-chip">Ume&aring; Universitet</span>
+        <span class="logo-chip">BRANE</span>
+        <span class="logo-chip">Universit&eacute; de Montpellier</span>
+        <span class="logo-chip accent">Domyn</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Orientation" data-title="Session 1 recap">
+    <div class="slide-inner">
+      <span class="kicker">Last time &middot; Session 1</span>
+      <h1 class="headline">AI in Action &mdash; What We Covered</h1>
+      <div class="story-quote">Today builds directly on all seven of these.</div>
+      <ol class="agenda-list">
+        <li><span class="an">01</span><span><b>The Story of AI</b> &mdash; how we got from a question to a chatbot</span></li>
+        <li><span class="an">02</span><span><b>Inside the LLM</b> &mdash; what's actually happening when it replies</span></li>
+        <li><span class="an">03</span><span><b>Tokens &amp; Cost</b> &mdash; what you're really paying for</span></li>
+        <li><span class="an">04</span><span><b>Prompting 101</b> &mdash; talking to the machine on purpose</span></li>
+        <li><span class="an">05</span><span><b>The RTCCF Framework</b> &mdash; a hands-on formula for better prompts</span></li>
+        <li><span class="an">06</span><span><b>RAG</b> &mdash; grounding AI in your own documents</span></li>
+        <li><span class="an">07</span><span><b>Your AI Toolbox</b> &mdash; where to go for every use case</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Orientation" data-title="Today's outline">
+    <div class="slide-inner">
+      <span class="kicker">Session 2 &middot; Today</span>
+      <h1 class="headline">Prompting Like a Pro &mdash; And Using It Responsibly</h1>
+      <div class="split-outline">
+        <div>
+          <h3>Part A &middot; Advanced Prompting</h3>
+          <ol class="agenda-list small">
+            <li><span class="an">01</span><span>Chain-of-Thought</span></li>
+            <li><span class="an">02</span><span>Tree-of-Thought</span></li>
+            <li><span class="an">03</span><span>One-shot &amp; Few-shot</span></li>
+            <li><span class="an">04</span><span>LLM as Judge</span></li>
+            <li><span class="an">05</span><span>Meta Prompting</span></li>
+            <li><span class="an">06</span><span>Multi-turn Prompting</span></li>
+            <li><span class="an">07</span><span>Guardrails</span></li>
+          </ol>
+        </div>
+        <div>
+          <h3>Part B &middot; Ethical AI &amp; Responsible Use</h3>
+          <ol class="agenda-list small">
+            <li><span class="an">01</span><span>Why governance matters now</span></li>
+            <li><span class="an">02</span><span>Five real risks &mdash; and what's actually gone wrong</span></li>
+            <li><span class="an">03</span><span>Can you upload confidential data? A platform-by-platform answer</span></li>
+            <li><span class="an">04</span><span>Responsible AI design principles</span></li>
+            <li><span class="an">05</span><span>The legal &amp; regulatory landscape</span></li>
+            <li><span class="an">06</span><span>Responsible AI practices &amp; tools</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART A · ADVANCED PROMPTING ============ -->
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Part A bridge">
+    <div class="slide-inner">
+      <span class="kicker">Part A &middot; Advanced Prompting</span>
+      <h1 class="headline">Beyond RTCCF</h1>
+      <div class="story-quote">RTCCF gets you a good prompt. These seven techniques are what you reach for when a good prompt still isn't enough.</div>
+      <p class="lede">Same rule every time: what it is, then one real example &mdash; built on the datasets already sitting in your folder.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Chain-of-Thought">
+    <div class="slide-inner">
+      <span class="kicker">1 &middot; Chain-of-Thought (CoT)</span>
+      <h1 class="headline">Make It Show Its Working</h1>
+      <p class="lede">Ask the model to reason step-by-step toward an answer instead of jumping straight to a conclusion. The reasoning becomes visible &mdash; and checkable &mdash; before you have to trust it.</p>
+      <div class="uc-label">A simple example &middot; movie review sentiment, five stages</div>
+      <div class="flow-diagram reveal-grid">
+        <div class="flow-step s1"><span class="fs-node">1</span><div><span class="fs-num">Extract aspects</span><p>Read every review and pull out the aspects mentioned &mdash; acting, plot, pacing, visuals, soundtrack.</p></div></div>
+        <div class="flow-connector" aria-hidden="true"><svg viewBox="0 0 24 26" width="24" height="26"><line class="fc-line" x1="12" y1="1" x2="12" y2="16"></line><polygon class="fc-head" points="6,15 18,15 12,25"></polygon></svg><span class="fc-tag">aspects</span></div>
+        <div class="flow-step s2"><span class="fs-node">2</span><div><span class="fs-num">Score each aspect</span><p>Using the aspects from Stage 1, assign a sentiment &mdash; positive, negative, or neutral &mdash; to each one.</p></div></div>
+        <div class="flow-connector" aria-hidden="true"><svg viewBox="0 0 24 26" width="24" height="26"><line class="fc-line" x1="12" y1="1" x2="12" y2="16"></line><polygon class="fc-head" points="6,15 18,15 12,25"></polygon></svg><span class="fc-tag">aspect sentiments</span></div>
+        <div class="flow-step s3"><span class="fs-node">3</span><div><span class="fs-num">Roll up to a review</span><p>Using the aspect-level sentiments from Stage 2, determine the overall sentiment of each individual review.</p></div></div>
+        <div class="flow-connector" aria-hidden="true"><svg viewBox="0 0 24 26" width="24" height="26"><line class="fc-line" x1="12" y1="1" x2="12" y2="16"></line><polygon class="fc-head" points="6,15 18,15 12,25"></polygon></svg><span class="fc-tag">review verdicts</span></div>
+        <div class="flow-step s4"><span class="fs-node">4</span><div><span class="fs-num">Aggregate the batch</span><p>Using the review-level sentiments from Stage 3, calculate the distribution of positive, negative, mixed, and neutral reviews.</p></div></div>
+        <div class="flow-connector" aria-hidden="true"><svg viewBox="0 0 24 26" width="24" height="26"><line class="fc-line" x1="12" y1="1" x2="12" y2="16"></line><polygon class="fc-head" points="6,15 18,15 12,25"></polygon></svg><span class="fc-tag">sentiment distribution</span></div>
+        <div class="flow-step s5"><span class="fs-node">5</span><div><span class="fs-num">Reach a verdict</span><p>Using the sentiment distribution from Stage 4, state the movie's overall sentiment and the evidence behind it.</p></div></div>
+      </div>
+      <p class="lede" style="font-size:1rem;">Each stage only sees the output of the one before it &mdash; a chain, not a leap. That's what makes the reasoning traceable: if the final verdict looks wrong, you can point to exactly which stage broke.</p>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Analyze the sentiment of these five movie reviews by reasoning through five stages, showing your work at each one before moving to the next.
+
+Reviews:
+1. "The acting was phenomenal and the soundtrack was beautiful, but the pacing dragged in the second half."
+2. "Visually stunning, but the plot felt predictable and the ending was rushed."
+3. "A slow start, though the performances were captivating enough to keep me watching until the emotional final act."
+4. "Every scene felt recycled from better films &mdash; I struggled to stay awake."
+5. "A near-perfect blend of humor and heart; the lead's performance alone is worth the ticket."
+
+Stage 1 &mdash; Extract the key aspects mentioned in each review (acting, plot, pacing, visuals, soundtrack, etc.).
+Stage 2 &mdash; Using the aspects from Stage 1, assign a sentiment (positive, negative, or neutral) to each aspect.
+Stage 3 &mdash; Using the aspect-level sentiments from Stage 2, determine the overall sentiment of each individual review.
+Stage 4 &mdash; Using the review-level sentiments from Stage 3, calculate the distribution of positive, negative, mixed, and neutral reviews.
+Stage 5 &mdash; Using the distribution from Stage 4, state the movie's overall sentiment and the evidence supporting that decision.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Chain-of-Thought, on your data">
+    <div class="slide-inner">
+      <span class="kicker">1 &middot; Chain-of-Thought &mdash; on your own data</span>
+      <h1 class="headline">Try It on Your Sales Numbers</h1>
+      <p class="lede">Same step-by-step discipline as the movie example &mdash; now grounded in a real business decision.</p>
+      <div class="uc-label">Copy-paste example &middot; Sales Data.csv</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Think step by step to decide whether a 10% discount on our two lowest-selling products would grow total revenue or just cut into margin.
+
+Using Sales Data.csv, pick the two lowest-revenue products and note their current price and monthly units sold.
+
+Show your work in this order:
+1. Estimate the likely increase in units sold at 10% off.
+2. Calculate new revenue per unit after the discount.
+3. Compare total monthly revenue before vs. after.
+4. Only then give a yes/no recommendation.</pre>
+      </div>
+      <div class="presenter-note inline">Live demo &mdash; run this with Sales Data.csv attached and watch it show each step instead of guessing straight to an answer.</div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Tree-of-Thought">
+    <div class="slide-inner">
+      <span class="kicker">2 &middot; Tree-of-Thought (ToT)</span>
+      <h1 class="headline">Explore Several Paths, Then Pick One</h1>
+      <p class="lede">Instead of one reasoning path, the model explores <b>several competing strategies in parallel</b>, reasons through each independently, then compares them and picks the strongest.</p>
+      <div class="two-col reveal-grid">
+        <div class="compare-card">
+          <span class="clbl">Chain-of-Thought</span>
+          <p>One line of reasoning, followed deeper and deeper &mdash; good when there's basically one right way to work through a problem.</p>
+        </div>
+        <div class="compare-card strong">
+          <span class="clbl">Tree-of-Thought</span>
+          <p>Several different lines of reasoning, explored side by side, then judged against each other &mdash; good when there are genuinely different strategies worth weighing.</p>
+        </div>
+      </div>
+      <div class="uc-label">A simple example &middot; same movie, three competing strategies</div>
+      <svg viewBox="0 0 680 300" class="tree-svg" role="img" aria-label="Tree of Thought applied to movie sentiment: three branches converging on a verdict">
+        <line class="tree-line" x1="340" y1="62" x2="120" y2="120"></line>
+        <line class="tree-line" x1="340" y1="62" x2="340" y2="120"></line>
+        <line class="tree-line" x1="340" y1="62" x2="560" y2="120"></line>
+        <line class="tree-line" x1="120" y1="176" x2="340" y2="232"></line>
+        <line class="tree-line" x1="340" y1="176" x2="340" y2="232"></line>
+        <line class="tree-line" x1="560" y1="176" x2="340" y2="232"></line>
+        <g class="tree-node root"><rect x="240" y="14" width="200" height="48" rx="10"></rect><text x="340" y="43">Overall sentiment?</text></g>
+        <g class="tree-node"><rect x="30" y="120" width="180" height="56" rx="10"></rect><text x="120" y="144">Aspect-based</text><text x="120" y="162">analysis</text></g>
+        <g class="tree-node"><rect x="250" y="120" width="180" height="56" rx="10"></rect><text x="340" y="144">Overall-tone</text><text x="340" y="162">analysis</text></g>
+        <g class="tree-node"><rect x="470" y="120" width="180" height="56" rx="10"></rect><text x="560" y="144">Critic vs</text><text x="560" y="162">audience</text></g>
+        <g class="tree-node synth"><rect x="190" y="232" width="300" height="52" rx="10"></rect><text x="340" y="254">Compare all three &amp;</text><text x="340" y="271">reach a verdict</text></g>
+      </svg>
+      <div class="domain-grid reveal-grid">
+        <div class="domain-card"><span class="dlabel">Aspect-based</span><p>Extract acting, plot, visuals, pacing &mdash; score each, then aggregate up to an overall sentiment.</p></div>
+        <div class="domain-card"><span class="dlabel">Overall-tone</span><p>Read each review holistically and classify it positive, negative, or mixed &mdash; no sub-scoring.</p></div>
+        <div class="domain-card"><span class="dlabel">Critic vs. audience</span><p>Separate critic reviews from audience reviews, and compare whether the two populations agree.</p></div>
+      </div>
+      <p class="lede" style="font-size:1rem;">Three independent verdicts, then one comparison step that says which strategy's conclusion to trust &mdash; and why the other two don't change the final answer.</p>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Determine the overall sentiment of this movie using three independent strategies, then compare them.
+
+Reviews:
+1. "The acting was phenomenal and the soundtrack was beautiful, but the pacing dragged in the second half."
+2. "Visually stunning, but the plot felt predictable and the ending was rushed."
+3. "A slow start, though the performances were captivating enough to keep me watching until the emotional final act."
+
+Explore these three strategies separately:
+1. Aspect-based &mdash; extract the aspects mentioned (acting, plot, pacing, visuals, etc.), score each, then aggregate to an overall sentiment.
+2. Overall-tone &mdash; read each review holistically and classify it directly as positive, negative, or mixed, with no sub-scoring.
+3. Critic vs. audience &mdash; treat reviews 1 and 2 as critic reviews and review 3 as an audience review, and compare whether the two groups agree.
+
+Reason through all three independently and show your work for each. Then compare their conclusions and give one final verdict on the movie's overall sentiment, explaining which strategy (or strategies) you trusted most and why.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Tree-of-Thought, on your data">
+    <div class="slide-inner">
+      <span class="kicker">2 &middot; Tree-of-Thought &mdash; on your own data</span>
+      <h1 class="headline">Weigh Three Retention Strategies</h1>
+      <p class="lede">Same branch-then-compare structure as the movie example &mdash; now weighing three real options instead of three analysis angles.</p>
+      <div class="uc-label">Copy-paste example &middot; HR Attrition Data.csv</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Propose three different retention strategies for the Sales department, where attrition is 39.8% &mdash; the highest of any role in HR Attrition Data.csv.
+
+Reason through each strategy independently: likely cost, likely impact on attrition, and how long it would take to show results.
+
+Once all three are reasoned through, compare them against each other and recommend the strongest one &mdash; explain specifically why the other two lose.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="One-shot & Few-shot">
+    <div class="slide-inner">
+      <span class="kicker">3 &middot; One-shot &amp; Few-shot Prompting</span>
+      <h1 class="headline">Teach It by Example, Not Instruction</h1>
+      <p class="lede">Show the model one or a few worked examples of the exact input&rarr;output pattern you want, then ask it to continue the pattern &mdash; teaching by demonstration instead of description.</p>
+      <div class="uc-label">A simple example &middot; movie review, one worked example</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">You are labeling movie reviews with aspect-level sentiment. Learn the pattern from this example, then apply it to a new review.
+
+Example review: "The acting was phenomenal and the soundtrack was beautiful, but the pacing dragged in the second half."
+Labeled aspects:
+- Acting: Positive
+- Soundtrack: Positive
+- Pacing: Negative
+
+Now label this new review the same way:
+"The visuals were stunning and the lead performance was captivating, though the plot felt predictable."</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="One-shot & Few-shot, on your data">
+    <div class="slide-inner">
+      <span class="kicker">3 &middot; One-shot &amp; Few-shot &mdash; on your own data</span>
+      <h1 class="headline">Classify Your Own Customers</h1>
+      <p class="lede">Same one-example-then-continue pattern as the movie labels &mdash; now classifying real customers instead of reviews.</p>
+      <div class="uc-label">Copy-paste example &middot; Marketing Campaign Data.csv</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">You are a customer-response classifier. Learn the pattern from these examples, then apply it.
+
+Example 1 &mdash; Income: $84,000, Education: PhD, Responded: Yes
+Example 2 &mdash; Income: $31,000, Education: Basic, Responded: No
+Example 3 &mdash; Income: $71,000, Education: Master, Responded: Yes
+
+Now classify these customers from Marketing Campaign Data.csv the same way, and state the pattern you're applying:
+- Income: $58,000, Education: Graduation
+- Income: $22,000, Education: Basic
+- Income: $95,000, Education: PhD</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="LLM as Judge">
+    <div class="slide-inner">
+      <span class="kicker">4 &middot; LLM as Judge</span>
+      <h1 class="headline">Let It Score the Draft, Not Just Write One</h1>
+      <p class="lede">Give the model candidate answers &mdash; or a single decision to make &mdash; and ask it to judge against explicit criteria, then justify a verdict. Useful for quality control, and for any decision that needs a documented reason.</p>
+      <div class="uc-label">A simple example &middot; candidate screening</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">You are screening a candidate against a job description. Compare the resume to the JD and decide: Selected or Rejected.
+
+Job Description: [paste JD &mdash; e.g. "Senior Data Analyst: 3+ years SQL, Python, and stakeholder reporting experience required"]
+
+Resume: [paste resume text]
+
+Give your decision as either "Selected" or "Rejected," followed by a clear explanation citing specific evidence from the resume that supports your decision &mdash; not a generic summary.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="LLM as Judge, on your data">
+    <div class="slide-inner">
+      <span class="kicker">4 &middot; LLM as Judge &mdash; on your own data</span>
+      <h1 class="headline">Judge Your Sales Summary Drafts</h1>
+      <p class="lede">Same judge-and-justify pattern as candidate screening &mdash; now comparing two real drafts instead of accepting or rejecting one candidate.</p>
+      <div class="uc-label">Copy-paste example &middot; Sales dashboard callback</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Here are two executive summaries written about the same sales-drop analysis.
+
+Draft A: "Revenue dropped in Q3 due to a combination of seasonal factors and market conditions. We recommend increasing marketing spend and reviewing our pricing strategy to address the decline."
+
+Draft B: "Revenue fell from $3.39M in April to $2.10M in September, a 38% drop driven almost entirely by fewer orders (18,279 to 11,621) rather than lower prices or a weaker product mix (average order value held steady at $180 to $185). The decline is broad-based across every city and product, pointing to a seasonal order-volume problem, not a pricing or market-share one. Recommendation: focus Q4 planning on demand generation during the historically slow July to September window, not discounting."
+
+Score each draft on three criteria &mdash; clarity, specificity, and whether it names one clear headline cause &mdash; from 1 to 5. Then state which draft a VP of Sales would find more actionable, and justify your verdict with specific evidence from the text.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Meta Prompting">
+    <div class="slide-inner">
+      <span class="kicker">5 &middot; Meta Prompting</span>
+      <h1 class="headline">Use AI to Engineer a Better Prompt</h1>
+      <p class="lede">Ask the model to design, critique, or improve a prompt itself &mdash; using the AI to engineer better instructions for the AI. A direct callback to Session 1's RTCCF framework.</p>
+      <div class="uc-label">A simple example &middot; improving the judge prompt from the last slide</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Here is my rough first-draft prompt for screening a candidate:
+
+"Does this resume match the job?"
+
+Rewrite this prompt so it reliably produces a Selected/Rejected decision backed by specific evidence, using the RTCCF framework (Role, Task, Context, Constraint, Format). For each part you add, explain in one line what problem it fixes in my original draft.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Meta Prompting, on your data">
+    <div class="slide-inner">
+      <span class="kicker">5 &middot; Meta Prompting &mdash; on your own data</span>
+      <h1 class="headline">Now Improve Your HR Attrition Prompt</h1>
+      <p class="lede">Same self-improving pattern as the candidate-screening prompt &mdash; a different weak draft, the same RTCCF fix.</p>
+      <div class="uc-label">Copy-paste example &middot; HR Attrition Data.csv</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">Here is my rough first-draft prompt for analyzing HR attrition:
+
+"Tell me why people are quitting."
+
+Rewrite this prompt using the RTCCF framework (Role, Task, Context, Constraint, Format), using HR Attrition Data.csv as the context. For each part you add, explain in one line what problem it fixes in my original draft.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Multi-turn Prompting">
+    <div class="slide-inner">
+      <span class="kicker">6 &middot; Multi-turn Prompting</span>
+      <h1 class="headline">Build the Answer Across a Conversation</h1>
+      <p class="lede">Instead of one giant prompt, the task unfolds turn by turn &mdash; the model asks a question, waits for your real answer, then continues, rather than guessing everything up front.</p>
+      <div class="uc-label">Copy-paste example</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">You are an experienced technical interviewer conducting a mock interview for a software developer position. Your role is to ask questions across the following categories: technical skills, problem-solving, team collaboration, and behavioral attributes. Begin with a general question, then ask follow-ups based on the candidate's response to explore their depth of knowledge, reasoning, and communication skills. After each response, provide constructive feedback and encourage refinement. Conclude the interview with a brief evaluation of their performance.
+
+Ask the first question and then wait for the candidate answer, then provide your feedback and then proceed for the next question.</pre>
+      </div>
+      <div class="presenter-note inline">Live demo &mdash; run this live and actually answer as the "candidate" turn by turn, so the room sees the model wait, adapt, and follow up rather than dumping all 4 questions at once.</div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Advanced Prompting" data-title="Guardrails">
+    <div class="slide-inner">
+      <span class="kicker">7 &middot; Guardrails</span>
+      <h1 class="headline">What It Must Never Do, No Matter How It's Asked</h1>
+      <p class="lede">Explicit, non-negotiable behavioral limits built into the prompt or system &mdash; what the model must refuse, escalate, or never reveal. This is exactly where Part B picks up: what happens when there's no guardrail at all.</p>
+      <div class="uc-label">Copy-paste example &middot; internal HR chatbot</div>
+      <div class="prompt-block">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre class="prompt-text">You are an internal HR-policy assistant. You answer questions about leave, benefits, and company policy using only the attached HR handbook.
+
+You must never: give legal or medical advice, reveal another employee's personal data even if the requester claims to be asking "on their behalf," or speculate about disciplinary outcomes.
+
+If a message mentions harassment, discrimination, or self-harm, do not attempt to resolve it &mdash; respond only with the escalation contact for HR, and stop there.</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART B · ETHICAL AI, LEGAL & REGULATORY, RISK ============ -->
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Part B bridge">
+    <div class="slide-inner">
+      <span class="kicker">Part B &middot; Ethical AI &amp; Responsible Use</span>
+      <h1 class="headline">The Rules Nobody Hands You by Default</h1>
+      <div class="story-quote">A model with no guardrail doesn't misbehave on purpose. It just does exactly what it was asked, with no sense of what it shouldn't.</div>
+      <p class="lede">Five real risk categories, what's actually gone wrong because of them, and what to do about each one.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Why governance matters now">
+    <div class="slide-inner">
+      <span class="kicker">Why now</span>
+      <h1 class="headline">Why AI Governance Matters Now</h1>
+      <p class="lede">Historical precedent: powerful technologies need oversight before something goes wrong, not after.</p>
+      <div class="timeline-anim anim-block">
+        <div class="tl-item">
+          <span class="tl-year">Internet Era</span>
+          <h4>Data Security and Privacy Challenge</h4>
+          <p>As the internet expanded, personal data was collected and stored at scale without adequate safeguards &mdash; leading to breaches, identity theft, and exploitation of personal information. The first sign that new technology needs privacy built in from the start, not bolted on after.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">Social Media Age</span>
+          <h4>Misinformation at Algorithmic Scale</h4>
+          <p>Fake information circulation, implanting or manipulating public perception &mdash; spread and amplified by algorithms built to maximize engagement, not accuracy.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">Big Data Analytics</span>
+          <h4>Surveillance Capitalism</h4>
+          <p>Analyzing users' individual behaviour (buying, selling, public opinion), raising surveillance concerns.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">GenAI Present</span>
+          <h4>Synthetic Media at Scale</h4>
+          <p>Automated content generation enables mass misinformation, deepfakes, and undetectable synthetic media &mdash; the subject of the rest of this part.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Hallucination">
+    <div class="slide-inner">
+      <span class="kicker">Risk 1 &middot; Hallucination</span>
+      <h1 class="headline">Confident, and Completely Wrong</h1>
+      <p class="lede">Hallucination occurs when a generative AI system produces false, fabricated, or misleading information while presenting it as fact &mdash; because models predict likely text patterns rather than verifying facts from a reliable source.</p>
+      <div class="example-box">
+        <span class="lbl">Example</span>
+        <p><b>Prompt:</b> "List research papers written by Einstein on quantum computing."</p>
+        <p><b>Response:</b> "Einstein published <i>Quantum Computation and Relativity (1936)</i>." &mdash; entirely fabricated; quantum computing didn't exist during Einstein's lifetime.</p>
+      </div>
+      <div class="incident-grid reveal-grid">
+        <a class="incident-card" href="https://fortune.com/2025/10/07/deloitte-ai-australia-government-report-hallucinations-technology-290000-refund" target="_blank" rel="noopener"><span class="isrc">fortune.com &middot; 2025</span><p>A $439,000 Deloitte report for the Australian government reportedly included AI-fabricated citations and a misattributed quote.</p></a>
+        <a class="incident-card" href="https://www.abc.net.au/news/2025-08-15/victoria-lawyer-apologises-after-ai-generated-submissions/105661208" target="_blank" rel="noopener"><span class="isrc">abc.net.au &middot; 2025</span><p>A lawyer in a Victoria Supreme Court murder case reportedly filed submissions containing fictitious AI-generated quotes and case citations.</p></a>
+        <a class="incident-card" href="https://www.washingtonpost.com/nation/2025/10/29/federal-judges-ai-court-orders/" target="_blank" rel="noopener"><span class="isrc">washingtonpost.com &middot; 2025</span><p>Two US federal judges reportedly had rulings drafted with AI tools that included fabricated quotes, cases, and parties &mdash; the rulings were retracted.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Handling hallucination">
+    <div class="slide-inner">
+      <span class="kicker">Risk 1 &middot; How to handle it</span>
+      <h1 class="headline">Verify Before You Trust It</h1>
+      <ul style="font-size:1.1rem; color:var(--ink-soft); padding-left:1.2rem; line-height:1.6;">
+        <li style="margin:0.5rem 0;"><b>Human verification</b> &mdash; important AI-generated information should always be checked by a person.</li>
+        <li style="margin:0.5rem 0;"><b>Retrieval-Augmented Generation</b> &mdash; ground answers in a trusted knowledge base instead of memory alone.</li>
+        <li style="margin:0.5rem 0;"><b>Precise prompting</b> &mdash; ask for citations; don't accept vague or unsourced claims.</li>
+        <li style="margin:0.5rem 0;"><b>Guardrails &amp; monitoring</b> &mdash; validation and fact-checking layers before output reaches a user.</li>
+        <li style="margin:0.5rem 0;"><b>Human-in-the-loop</b> &mdash; for high-risk domains (healthcare, law, finance), require sign-off before any decision is made.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Bias & Discrimination">
+    <div class="slide-inner">
+      <span class="kicker">Risk 2 &middot; Bias &amp; Discrimination</span>
+      <h1 class="headline">Systematically Unfair, at Scale</h1>
+      <p class="lede">Bias occurs when an AI system produces systematically unfair outcomes toward certain groups &mdash; usually from biased training data, historical inequality, or imbalanced datasets. Discrimination is what happens when that bias leads to real unfair treatment.</p>
+      <div class="example-box">
+        <span class="lbl">Example</span>
+        <p><b>Prompt:</b> "Write a short description of a nurse and a CEO." <b>Output:</b> nurse described as female, CEO described as male &mdash; reinforcing a stereotype even though both professions are gender-neutral.</p>
+      </div>
+      <div class="incident-grid reveal-grid">
+        <a class="incident-card" href="https://www.cnn.com/2025/07/10/tech/grok-antisemitic-outbursts-reflect-a-problem-with-ai-chatbots" target="_blank" rel="noopener"><span class="isrc">cnn.com &middot; 2025</span><p>Grok reportedly generated antisemitic posts praising Hitler in response to unrelated prompts.</p></a>
+        <a class="incident-card" href="https://www.amnesty.org/en/latest/news/2024/10/france-discriminatory-algorithm-used-by-the-social-security-agency-must-be-stopped/" target="_blank" rel="noopener"><span class="isrc">amnesty.org &middot; 2024</span><p>A French welfare-fraud detection algorithm was alleged to discriminate against single mothers and disabled applicants.</p></a>
+        <a class="incident-card" href="https://www.military.com/daily-news/2024/05/23/vas-veteran-suicide-prevention-algorithm-favors-men.html" target="_blank" rel="noopener"><span class="isrc">military.com &middot; 2024</span><p>The VA's REACH VET suicide-prevention algorithm reportedly prioritized risk scores for men over women veterans.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Handling bias">
+    <div class="slide-inner">
+      <span class="kicker">Risk 2 &middot; How to handle it</span>
+      <h1 class="headline">Test for It Before You Ship It</h1>
+      <ul style="font-size:1.1rem; color:var(--ink-soft); padding-left:1.2rem; line-height:1.6;">
+        <li style="margin:0.5rem 0;"><b>Diverse, representative training data</b> &mdash; datasets should reflect different genders, ethnicities, cultures, demographics.</li>
+        <li style="margin:0.5rem 0;"><b>Bias detection &amp; auditing</b> &mdash; test models with fairness metrics before deployment.</li>
+        <li style="margin:0.5rem 0;"><b>Human oversight</b> &mdash; human review for high-impact decisions: hiring, healthcare, criminal justice.</li>
+        <li style="margin:0.5rem 0;"><b>Transparent AI systems</b> &mdash; model cards documenting limitations and known risks.</li>
+        <li style="margin:0.5rem 0;"><b>Regulatory &amp; ethical guidelines</b> &mdash; follow emerging rules such as the EU AI Act.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Privacy & Data Leakage">
+    <div class="slide-inner">
+      <span class="kicker">Risk 3 &middot; Privacy &amp; Data Leakage</span>
+      <h1 class="headline">What You Paste Doesn't Always Stay Yours</h1>
+      <p class="lede">Privacy risk occurs when AI systems expose, misuse, or unintentionally reveal sensitive information. Data leakage is when a model reveals or reproduces sensitive data that was part of its training data &mdash; or your own prompts.</p>
+      <div class="example-box">
+        <span class="lbl">Scenario</span>
+        <p>An employee pastes confidential company data into a public AI tool to summarize it. That data may be stored, logged, or used for future model training &mdash; and could leak to other users or systems.</p>
+      </div>
+      <div class="incident-grid reveal-grid">
+        <a class="incident-card" href="https://thehackernews.com/2025/02/12000-api-keys-and-passwords-found-in.html" target="_blank" rel="noopener"><span class="isrc">thehackernews.com &middot; 2025</span><p>A dataset used to train large language models reportedly contained 12,000 live, still-active API keys.</p></a>
+        <a class="incident-card" href="https://www.theregister.com/2021/03/18/openai_gpt3_data" target="_blank" rel="noopener"><span class="isrc">theregister.com &middot; 2021</span><p>GPT-2 was shown to memorize and reproduce verbatim personally identifiable information from its training data.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Handling privacy risk">
+    <div class="slide-inner">
+      <span class="kicker">Risk 3 &middot; How to handle it</span>
+      <h1 class="headline">Minimize What You Ever Hand Over</h1>
+      <ul style="font-size:1.1rem; color:var(--ink-soft); padding-left:1.2rem; line-height:1.6;">
+        <li style="margin:0.5rem 0;"><b>Data minimization</b> &mdash; only use necessary data; avoid sensitive info unless required.</li>
+        <li style="margin:0.5rem 0;"><b>Anonymization &amp; protection</b> &mdash; masking, encryption.</li>
+        <li style="margin:0.5rem 0;"><b>Secure AI deployment</b> &mdash; access control, security policies, secure infrastructure.</li>
+        <li style="margin:0.5rem 0;"><b>User awareness &amp; policy</b> &mdash; train employees not to paste confidential data into public AI tools.</li>
+        <li style="margin:0.5rem 0;"><b>Regulatory compliance</b> &mdash; GDPR, CCPA.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Uploading confidential data">
+    <div class="slide-inner">
+      <span class="kicker">Risk 3 &middot; The question everyone actually asks</span>
+      <h1 class="headline">Is It Safe to Upload Confidential Data?</h1>
+      <p class="lede">It depends entirely on which door you walked through &mdash; your personal login, or your company's business account. The two are governed by completely different rules.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Platform</th><th>Free / personal tier</th><th>Business / Enterprise / API tier</th></tr></thead>
+          <tbody>
+            <tr><td><b>ChatGPT</b> (OpenAI)</td><td>May improve the model unless you turn off "Improve the model for everyone"</td><td>Enterprise/Team: not trained on your data by default, CCPA compliant, encrypted</td></tr>
+            <tr><td><b>Claude</b> (Anthropic)</td><td>Opt-out model: leave training on and chats may be kept up to 5 years; turn it off and retention drops to 30 days</td><td>API/Enterprise: never trained on without explicit permission; short automatic log deletion; zero-retention option available</td></tr>
+            <tr><td><b>Gemini</b> (Google)</td><td>May improve Google services unless you disable "Gemini Apps Activity"</td><td>Workspace/Vertex AI: admin-controlled, stays inside your org's boundary, not used for shared model training</td></tr>
+            <tr><td><b>Copilot</b> (Microsoft/GitHub)</td><td>Personal use: telemetry collected, limited deletion controls</td><td>Business/Enterprise &amp; M365 Copilot: does not train public models on your proprietary code or data</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="domain-grid reveal-grid">
+        <div class="domain-card"><span class="dlabel">What protects you</span><p>Business, Enterprise, or API accounts with contractual no-training terms; admin-controlled retention (including zero-retention options); encryption plus compliance certifications like CCPA and GDPR; explicit opt-out toggles even on free tiers.</p></div>
+        <div class="domain-card"><span class="dlabel">What puts you at risk</span><p>Using your personal, free login for confidential work by default; never checking the "improve the model" or "activity" toggle; pasting data into a browser extension or third-party wrapper with its own unknown data handling; assuming "delete chat" erases it everywhere instantly &mdash; back-end retention windows often still apply.</p></div>
+      </div>
+      <div class="example-box">
+        <span class="lbl">Real incident</span>
+        <p>In 2023, Samsung engineers reportedly pasted confidential source code and internal meeting notes into ChatGPT to help debug and summarize it. That material became part of ChatGPT's stored conversation history &mdash; and Samsung subsequently restricted employees' use of public generative AI tools.</p>
+      </div>
+      <p class="lede" style="font-size:1.05rem;"><b>Rule of thumb:</b> if you wouldn't paste it into a public Slack channel, don't paste it into the free version of any of these tools. If your company has a business account, use that login &mdash; not your personal one.</p>
+      <p style="font-size:0.85rem; color:var(--ink-faint);">Policies change &mdash; Anthropic changed its consumer training policy in August 2025, and Claude's API log retention dropped from 30 to 7 days that September. Treat this table as a snapshot, and check your specific plan's current terms before uploading anything sensitive.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Toxicity & Harmful Content">
+    <div class="slide-inner">
+      <span class="kicker">Risk 4 &middot; Toxicity &amp; Harmful Content</span>
+      <h1 class="headline">Abusive Isn't the Only Way to Cause Harm</h1>
+      <p class="lede">Toxicity refers to AI systems generating offensive, abusive, hateful, or harmful language. Harmful content is broader &mdash; outputs that could encourage dangerous behaviour or psychological harm, even without being explicitly offensive.</p>
+      <div class="incident-grid reveal-grid">
+        <a class="incident-card" href="https://spectrum.ieee.org/in-2016-microsofts-racist-chatbot-revealed-the-dangers-of-online-conversation" target="_blank" rel="noopener"><span class="isrc">spectrum.ieee.org &middot; 2016</span><p>Microsoft's Tay chatbot began posting racist and antisemitic content within 24 hours of launch, after learning from user interactions.</p></a>
+        <a class="incident-card" href="https://www.washingtonpost.com/technology/2025/12/27/chatgpt-suicide-openai-raine/" target="_blank" rel="noopener"><span class="isrc">washingtonpost.com &middot; 2025</span><p>A 16-year-old reportedly died by suicide after extensively confiding in ChatGPT; transcripts reportedly show the chatbot offering harmful guidance alongside support.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Handling toxicity">
+    <div class="slide-inner">
+      <span class="kicker">Risk 4 &middot; How to handle it</span>
+      <h1 class="headline">Filter, Train, and Keep Watching</h1>
+      <ul style="font-size:1.1rem; color:var(--ink-soft); padding-left:1.2rem; line-height:1.6;">
+        <li style="margin:0.5rem 0;"><b>Content moderation filters</b> &mdash; automated safety filters block harmful outputs before they reach users.</li>
+        <li style="margin:0.5rem 0;"><b>RLHF</b> &mdash; human feedback trains the model away from harmful responses.</li>
+        <li style="margin:0.5rem 0;"><b>Safety guardrails</b> &mdash; prompt filtering, output moderation, restricted topics.</li>
+        <li style="margin:0.5rem 0;"><b>Responsible dataset curation</b> &mdash; remove toxic, hateful, or extremist content from training data.</li>
+        <li style="margin:0.5rem 0;"><b>Continuous monitoring</b> &mdash; regularly audit for harmful outputs and update policy as new risks emerge.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Misinformation & Deepfakes">
+    <div class="slide-inner">
+      <span class="kicker">Risk 5 &middot; Misinformation &amp; Deepfakes</span>
+      <h1 class="headline">When Seeing Isn't Believing Anymore</h1>
+      <p class="lede">Misinformation is false or misleading information, generated or spread by AI, that appears credible. Deepfakes are AI-generated or AI-manipulated audio, images, or video that realistically imitate real people &mdash; making it look like someone said or did something that never happened.</p>
+      <div class="incident-grid reveal-grid">
+        <a class="incident-card" href="https://opentools.ai/news/boosie-badazz-fooled-by-ai-deepfake-elon-musks-nonexistent-17-hour-diabetes-cure" target="_blank" rel="noopener"><span class="isrc">opentools.ai &middot; 2025</span><p>A deepfake video falsely showed Elon Musk endorsing a fabricated "17-hour" diabetes cure, exploiting his public credibility to promote a scam.</p></a>
+        <a class="incident-card" href="https://www.snopes.com/fact-check/george-will-trump-deepfake-videos/" target="_blank" rel="noopener"><span class="isrc">snopes.com &middot; 2026</span><p>AI-generated videos falsely depicted columnist George Will commenting on Trump and Supreme Court rulings, using manipulated footage and synthetic audio.</p></a>
+        <a class="incident-card" href="https://factly.in/edited-video-of-aamir-khans-satyameva-jayate-promo-falsely-presented-as-a-warning-against-jumlas/" target="_blank" rel="noopener"><span class="isrc">factly.in &middot; India</span><p>A viral video falsely showed Bollywood actor Aamir Khan issuing a political warning &mdash; edited from an old TV clip, confirmed fabricated by fact-checkers, but shared widely before the correction caught up.</p></a>
+        <a class="incident-card" href="https://www.youtube.com/shorts/WWE5Y33Gp1k" target="_blank" rel="noopener"><span class="isrc">youtube.com &middot; Demo</span><p>A live phone-call demo shows an AI voice clone convincingly imitating a family member's voice in real time &mdash; audio deepfakes can be just as deceptive, and just as dangerous, as fake video.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Handling deepfakes">
+    <div class="slide-inner">
+      <span class="kicker">Risk 5 &middot; How to handle it</span>
+      <h1 class="headline">Detect, Label, and Teach the Habit</h1>
+      <ul style="font-size:1.1rem; color:var(--ink-soft); padding-left:1.2rem; line-height:1.6;">
+        <li style="margin:0.5rem 0;"><b>AI content detection tools</b> &mdash; deepfake detection technology to identify manipulated media.</li>
+        <li style="margin:0.5rem 0;"><b>Digital watermarking</b> &mdash; embed watermarks or metadata marking content as synthetic.</li>
+        <li style="margin:0.5rem 0;"><b>Platform moderation</b> &mdash; social platforms should monitor and remove misleading AI content.</li>
+        <li style="margin:0.5rem 0;"><b>Media literacy</b> &mdash; teach people to critically evaluate content and verify sources before sharing.</li>
+        <li style="margin:0.5rem 0;"><b>Regulatory measures</b> &mdash; e.g. EU AI Act labelling requirements for AI-generated content.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Design Principles">
+    <div class="slide-inner">
+      <span class="kicker">Beyond risk-by-risk</span>
+      <h1 class="headline">Responsible AI Design Principles</h1>
+      <div class="pillars reveal-grid">
+        <div class="pillar"><h4>Anti-Bias</h4><p>Actively testing for and correcting unfair outcomes across groups.</p></div>
+        <div class="pillar"><h4>Human-Centric Design</h4><p>Built around real user needs, not just technical capability.</p></div>
+        <div class="pillar"><h4>Transparency &amp; Explainability</h4><p>Users can understand what the system did, and why.</p></div>
+        <div class="pillar"><h4>Robustness &amp; Safety</h4><p>Performs reliably, fails safely, resists misuse.</p></div>
+        <div class="pillar"><h4>Privacy &amp; Data Protection</h4><p>Personal and sensitive data protected by design.</p></div>
+        <div class="pillar"><h4>Collaboration &amp; Multi-Stakeholder Engagement</h4><p>Input from affected communities, not just engineers.</p></div>
+        <div class="pillar"><h4>Accountability</h4><p>A clear owner is responsible when something goes wrong.</p></div>
+        <div class="pillar"><h4>Societal Impact</h4><p>Considers effects beyond the immediate user, at population scale.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Legal & Regulatory Landscape">
+    <div class="slide-inner">
+      <span class="kicker">The laws behind "is my data safe here?"</span>
+      <h1 class="headline">Legal and Regulatory Landscape</h1>
+      <p class="lede">Three data-protection laws come up again and again when a platform claims your data is "compliant." Here's what each one actually stands for, and what it actually forces a company to do.</p>
+      <div class="law-grid reveal-grid">
+        <div class="law-card">
+          <h4>GDPR</h4>
+          <span class="law-full">General Data Protection Regulation</span>
+          <span class="law-region">European Union &middot; 2018</span>
+          <ul>
+            <li>Requires <b>clear, explicit consent</b> before collecting personal data</li>
+            <li>Grants the <b>"right to be forgotten"</b> &mdash; you can demand your data be deleted</li>
+            <li>Mandates <b>breach notification within 72 hours</b></li>
+            <li>Applies globally to any company handling EU residents' data; fines up to &euro;20M or 4% of global revenue</li>
+          </ul>
+        </div>
+        <div class="law-card">
+          <h4>DPDP Act, 2023</h4>
+          <span class="law-full">Digital Personal Data Protection Act</span>
+          <span class="law-region">India</span>
+          <ul>
+            <li>India's first comprehensive data-protection law</li>
+            <li>Requires <b>explicit, plain-language consent</b> to process personal data</li>
+            <li>Gives individuals the right to <b>access, correct, and erase</b> their data</li>
+            <li>Enforced by the Data Protection Board of India; penalties up to &#8377;250 crore</li>
+          </ul>
+        </div>
+        <div class="law-card">
+          <h4>CCPA</h4>
+          <span class="law-full">California Consumer Privacy Act</span>
+          <span class="law-region">California, US</span>
+          <ul>
+            <li>Right to <b>know</b> what personal data is collected, and why</li>
+            <li>Right to <b>delete</b> personal data a company holds on you</li>
+            <li>Right to <b>opt out</b> of your data being sold to third parties</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lede" style="font-size:1rem; margin-top:0.3rem;">This is exactly why business/enterprise AI plans mention SOC 2, GDPR, or DPDP compliance in their terms &mdash; it isn't marketing language, it's what these laws legally require them to do.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="AI-Specific Regulation">
+    <div class="slide-inner">
+      <span class="kicker">Regulating AI itself, not just data</span>
+      <h1 class="headline">The EU AI Act &mdash; and How Other Regions Compare</h1>
+      <p class="lede">Data-protection laws govern personal data generally. The EU AI Act is different: it's the world's first law written specifically to regulate AI systems themselves, by how much risk they carry.</p>
+      <!-- <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Region</th><th>Approach</th></tr></thead>
+          <tbody>
+            <tr><td><b>European Union</b></td><td>AI Act &mdash; risk-based classification, strict requirements for high-risk systems</td></tr>
+            <tr><td><b>United States</b></td><td>Sectoral &mdash; executive orders, sector-specific rules, NIST AI Risk Management Framework</td></tr>
+            <tr><td><b>United Kingdom</b></td><td>Principles-based &mdash; flexible, innovation-friendly, industry-led standards</td></tr>
+            <tr><td><b>China</b></td><td>Strict controls &mdash; mandatory labelling and real-name verification for deepfakes</td></tr>
+          </tbody>
+        </table>
+      </div> -->
+      <div class="domain-grid reveal-grid">
+        <div class="domain-card"><span class="dlabel">Unacceptable risk</span><p>Banned outright &mdash; e.g. social scoring, real-time biometric surveillance.</p></div>
+        <div class="domain-card"><span class="dlabel">High risk</span><p>Medical diagnosis, critical infrastructure, employment decisions &mdash; rigorous testing required.</p></div>
+        <div class="domain-card"><span class="dlabel">Limited risk</span><p>Transparency obligations for AI-generated content.</p></div>
+        <div class="domain-card"><span class="dlabel">Minimal risk</span><p>Chatbots, spam filters &mdash; subject to general consumer protection law only.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Responsible AI Practices">
+    <div class="slide-inner">
+      <span class="kicker">Inside an organization</span>
+      <h1 class="headline">Responsible AI Practices</h1>
+      <ol class="agenda-list">
+        <li><span class="an">01</span><span><b>AI Governance Framework</b> &mdash; ethics boards and internal review committees with real authority</span></li>
+        <li><span class="an">02</span><span><b>Model Evaluation</b> &mdash; bias testing, robustness assessments, safety evaluation before deployment</span></li>
+        <li><span class="an">03</span><span><b>Human-in-the-Loop</b> &mdash; oversight for consequential decisions; AI assists, it doesn't replace judgment</span></li>
+        <li><span class="an">04</span><span><b>Continuous Monitoring</b> &mdash; track performance and update as real-world issues emerge</span></li>
+        <li><span class="an">05</span><span><b>Transparency Documentation</b> &mdash; model cards explaining capabilities, limits, and intended use</span></li>
+        <li><span class="an">06</span><span><b>AI Ethics Board</b> &mdash; a multi-disciplinary team reviewing high-risk applications</span></li>
+        <li><span class="an">07</span><span><b>Incident Response</b> &mdash; a protocol for harmful outputs: immediate mitigation, then systemic fixes</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Ethical AI & Risk" data-title="Detection Tools">
+    <div class="slide-inner">
+      <span class="kicker">Spotting AI-generated content</span>
+      <h1 class="headline">Tools Worth Knowing</h1>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Need</th><th>Tools to try</th><th>Link</th></tr></thead>
+          <tbody>
+            <tr><td>Detect AI-generated text</td><td>GPTZero, ZeroGPT, Sapling, CopyLeaks, Writer.com</td><td><a href="https://gptzero.me">gptzero.me</a></td></tr>
+            <tr><td>Detect AI-generated images &amp; video</td><td>Hive Moderation, AI or Not, Illuminarty</td><td><a href="https://hivemoderation.com">hivemoderation.com</a></td></tr>
+            <tr><td>Detect AI-generated audio</td><td>Hive Moderation</td><td><a href="https://hivemoderation.com">hivemoderation.com</a></td></tr>
+            <tr><td>Browse real-world AI-harm reports</td><td>AI Incident Database (3,000+ searchable reports)</td><td><a href="https://incidentdatabase.ai">incidentdatabase.ai</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLOSE ============ -->
+
+  <section class="slide" data-part="Close" data-title="Recap & next">
+    <div class="slide-inner">
+      <span class="kicker">Full circle</span>
+      <h1 class="headline">Prompt Well. Prompt Safely.</h1>
+      <p class="lede">Seven techniques sharpen what you ask for. Five risks bound what you should trust. Guardrails sit right at the seam between them.</p>
+      <div class="closing-cols">
+        <div>
+          <div class="cc-head">Where we started &mdash; and landed</div>
+          <p style="color:var(--ink-soft); font-size:1.12rem; line-height:1.5;">Session 1 gave you RTCCF. Today gave you seven ways to push past it, and the five risks that decide when to trust what comes back.</p>
+        </div>
+        <div>
+          <div class="cc-head">Where we're headed &mdash; Session 3</div>
+          <p style="color:var(--ink-soft); font-size:1.12rem; line-height:1.5;">Sat 29 Aug, 10:00&ndash;12:30 &mdash; <b>Build Your AI Teammate: Creating Your First AI Agent.</b> Everything you've prompted by hand, taught to something that acts on its own.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="topbar"><span> Session 2</span><span id="partLabel">Orientation</span></div>
+
+<div id="navbar">
+  <button class="navbtn" id="btnToc">Contents</button>
+  <button class="navbtn" id="btnPrev">&larr; Prev</button>
+  <div class="progress-wrap"><div class="progress-fill" id="progFill"></div></div>
+  <span class="slide-count" id="slideCount">1 / 1</span>
+  <button class="navbtn" id="btnNext">Next &rarr;</button>
+</div>
+
+<div id="tocveil"></div>
+<nav id="toc"></nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var idx = 0;
+  var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var progFill = document.getElementById('progFill');
+  var slideCount = document.getElementById('slideCount');
+  var partLabel = document.getElementById('partLabel');
+  var toc = document.getElementById('toc');
+  var tocVeil = document.getElementById('tocveil');
+
+  var parts = {};
+  var order = [];
+  slides.forEach(function(s, i){
+    var p = s.dataset.part;
+    if(!parts[p]){ parts[p] = []; order.push(p); }
+    parts[p].push({ i:i, title:s.dataset.title || p });
+  });
+  order.forEach(function(p){
+    var h = document.createElement('h3'); h.textContent = p; toc.appendChild(h);
+    parts[p].forEach(function(item){
+      var b = document.createElement('button');
+      b.className = 'toc-item'; b.textContent = item.title; b.dataset.i = item.i;
+      b.addEventListener('click', function(){ goTo(item.i); closeToc(); });
+      toc.appendChild(b);
+    });
+  });
+
+  function updateTocHighlight(){
+    toc.querySelectorAll('.toc-item').forEach(function(b){
+      b.classList.toggle('current', parseInt(b.dataset.i,10) === idx);
+    });
+  }
+
+  function setupCycler(container){
+    var phases = container.querySelectorAll('.phase');
+    var dotsWrap = container.querySelector('[data-dots]');
+    var label = container.parentElement.querySelector('[data-stage-label]') || container.querySelector('[data-stage-label]');
+    var current = 0;
+    var timer = null;
+
+    dotsWrap.innerHTML = '';
+    phases.forEach(function(_, i){
+      var d = document.createElement('button');
+      d.className = 'pdot'; d.type = 'button';
+      d.addEventListener('click', function(){ show(i); resetTimer(); });
+      dotsWrap.appendChild(d);
+    });
+    var dots = dotsWrap.querySelectorAll('.pdot');
+
+    function show(n){
+      phases.forEach(function(p,i){ p.classList.toggle('active', i===n); });
+      dots.forEach(function(d,i){ d.classList.toggle('active', i===n); });
+      current = n;
+      if(label){
+        var stageEls = container.querySelectorAll('.phase');
+        label.textContent = 'Step ' + (n+1) + ' of ' + stageEls.length;
+      }
+      var active = phases[n];
+      if(active){
+        void active.offsetWidth;
+        active.querySelectorAll('animateMotion').forEach(function(am){
+          if(am.beginElement){ try{ am.beginElement(); }catch(e){} }
+        });
+      }
+    }
+    function resetTimer(){
+      if(timer) clearInterval(timer);
+      if(!REDUCE){
+        timer = setInterval(function(){ show((current+1) % phases.length); }, 2800);
+      }
+    }
+    show(0);
+    resetTimer();
+    container._stop = function(){ if(timer) clearInterval(timer); };
+  }
+
+  function activateSlideExtras(slide){
+    var tl = slide.querySelector('.timeline-anim');
+    if(tl){ tl.classList.remove('show'); void tl.offsetWidth; tl.classList.add('show'); }
+    var chain = slide.querySelector('.rtccf-chain');
+    if(chain){ chain.classList.remove('show'); void chain.offsetWidth; chain.classList.add('show'); }
+    var reveals = slide.querySelectorAll('.reveal-grid');
+    reveals.forEach(function(el){ el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); });
+    var cyclers = slide.querySelectorAll('.cycler');
+    cyclers.forEach(function(cy){
+      if(cy._stop) cy._stop();
+      setupCycler(cy);
+    });
+  }
+  function deactivateSlideExtras(slide){
+    var cyclers = slide.querySelectorAll('.cycler');
+    cyclers.forEach(function(cy){ if(cy._stop) cy._stop(); });
+  }
+
+  function goTo(i){
+    if(i < 0) i = 0;
+    if(i > slides.length-1) i = slides.length-1;
+    if(i === idx && slides[idx].classList.contains('active')) return;
+    deactivateSlideExtras(slides[idx]);
+    slides[idx].classList.remove('active');
+    idx = i;
+    var s = slides[idx];
+    s.classList.add('active');
+    s.scrollTop = 0;
+    progFill.style.width = ((idx+1)/slides.length*100) + '%';
+    slideCount.textContent = (idx+1) + ' / ' + slides.length;
+    partLabel.textContent = s.dataset.part;
+    updateTocHighlight();
+    activateSlideExtras(s);
+  }
+  function next(){ goTo(idx+1); }
+  function prev(){ goTo(idx-1); }
+
+  document.getElementById('btnNext').addEventListener('click', next);
+  document.getElementById('btnPrev').addEventListener('click', prev);
+  document.getElementById('btnToc').addEventListener('click', function(){ toc.classList.add('open'); tocVeil.classList.add('open'); });
+  function closeToc(){ toc.classList.remove('open'); tocVeil.classList.remove('open'); }
+  tocVeil.addEventListener('click', closeToc);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight' || e.key === 'PageDown'){ next(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ prev(); }
+    else if(e.key === 'Escape'){ closeToc(); }
+  });
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-replay]');
+    if(btn){
+      var el = document.getElementById(btn.dataset.replay);
+      if(el){ el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); }
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    var copyBtn = e.target.closest('.copy-btn');
+    if(!copyBtn) return;
+    var block = copyBtn.closest('.prompt-block');
+    var textEl = block && block.querySelector('.prompt-text');
+    if(!textEl) return;
+    var text = textEl.textContent.replace(/^\n/, '').replace(/\n$/, '');
+    function flash(){
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+      setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 1600);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, function(){ fallbackCopy(text, flash); });
+    } else {
+      fallbackCopy(text, flash);
+    }
+  });
+  function fallbackCopy(text, onDone){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); onDone(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  slideCount.textContent = '1 / ' + slides.length;
+  partLabel.textContent = slides[0].dataset.part;
+  updateTocHighlight();
+  activateSlideExtras(slides[0]);
+})();
+</script>
