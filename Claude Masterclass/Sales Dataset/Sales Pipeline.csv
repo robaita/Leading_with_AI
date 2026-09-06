@@ -1,0 +1,16 @@
+Deal ID,Account,Deal Value,Stage,Expected Close Date,Last Activity Date,Primary Contact,Contacts Engaged,Owner
+D-1001,Acme Robotics,120000,Negotiation,2026-08-20,2026-08-25,Jane Kim (CTO),1,Priya Shah
+D-1002,Northwind Logistics,45000,Proposal,2026-09-30,2026-09-03,Mark Alvarez (Ops Director),3,Priya Shah
+D-1003,BrightPath Health,80000,Demo,2026-07-15,2026-07-20,Dr. Susan Lee (CIO),1,Priya Shah
+D-1004,Vertex Manufacturing,200000,Negotiation,2026-09-15,2026-09-01,Tom Becker (VP Eng),4,Priya Shah
+D-1005,Solstice Retail,30000,Discovery,2026-10-10,2026-08-10,Ana Ruiz (IT Manager),1,Priya Shah
+D-1006,Fjord Financial,150000,Proposal,2026-09-05,2026-09-04,Carl Nguyen (CFO),3,Priya Shah
+D-1007,Harbor Insurance,60000,Discovery,2026-11-01,2026-09-02,Linda Park (Head of IT),2,Priya Shah
+D-1008,Cascade Foods,95000,Negotiation,2026-08-28,2026-08-29,George Patel (COO),1,Priya Shah
+D-1009,Union Steel,175000,Proposal,2026-09-20,2026-07-28,Rita Gomez (VP Ops),2,Priya Shah
+D-1010,Bluepeak Media,40000,Demo,2026-09-25,2026-09-02,Sam Osei (Marketing Director),2,Priya Shah
+D-1011,Ironclad Freight,55000,Discovery,2026-10-05,2026-08-05,Nora Bell (Ops Manager),1,Priya Shah
+D-1012,Meridian Bank,250000,Negotiation,2026-09-10,2026-09-04,Alan Cho (CTO),5,Priya Shah
+D-1013,Coral Reef Hospitality,20000,Discovery,2026-11-15,2026-08-20,Maya Singh (GM),1,Priya Shah
+D-1014,Pioneer Energy,130000,Proposal,2026-07-30,2026-07-31,Derek Wu (VP Eng),1,Priya Shah
+D-1015,Silverline Telecom,70000,Demo,2026-10-01,2026-09-01,Elena Petrova (IT Director),3,Priya Shah

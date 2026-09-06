@@ -1,0 +1,14 @@
+Call with Meridian Bank - 9/4
+Attendees: Alan Cho (CTO), Priya (us), Rina from their security team joined ~10 min late
+
+- walked through the platform, they liked the reporting dashboard a lot, Alan asked good qs
+- Alan asked about SOC 2 compliance - need to send our SOC 2 report, he wants it before EOW
+- Rina raised concerns about SSO/SAML support - confirmed we support it, she wants a technical
+  deep dive call next week to go over implementation details
+- pricing came up - they're comparing us to a competitor, need to get back with a comparison
+  one-pager, Alan specifically asked for a side by side
+- Alan mentioned budget is approved for Q3, timeline is aggressive - wants to close by end of month
+- proposal review meeting tentatively week of 9/14, need to confirm time
+- overall very positive call, high intent, just need to clear the security review with Rina's team
+- Alan asked if we could do a short pilot with 2 branches before full rollout - need to check internally
+  if that's something we can offer
