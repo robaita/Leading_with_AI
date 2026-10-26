@@ -1,0 +1,2053 @@
+<meta charset="utf-8">
+<title>Leading with AI · Session 2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper:#eeede7;
+  --paper-raised:#f8f7f2;
+  --paper-sunken:#e6e4dc;
+  --ink:#1c232b;
+  --ink-soft:#4a535c;
+  --ink-faint:#7b838a;
+  --line:#d8d6cd;
+  --teal:#1f6f6b;
+  --teal-deep:#154c49;
+  --teal-bright:#2c8480;
+  --teal-wash:#dfe9e6;
+  --amber:#a86412;
+  --amber-wash:#f1e2cb;
+  --sage:#456b3f;
+  --sage-wash:#e2e9dd;
+  --rose:#95312c;
+  --rose-wash:#f0dfdb;
+  --shadow: 0 1px 2px rgba(28,35,43,0.06), 0 10px 30px -14px rgba(28,35,43,0.3);
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: 'Public Sans', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#14181c; --paper-raised:#1b2126; --paper-sunken:#101417;
+    --ink:#eae6dc; --ink-soft:#b7bcc2; --ink-faint:#7d848b; --line:#2c343b;
+    --teal:#5fb3ac; --teal-deep:#8fd0c9; --teal-bright:#6cc3bc; --teal-wash:#1c2c2a;
+    --amber:#e0a552; --amber-wash:#2c2416; --sage:#8fbf85; --sage-wash:#1e2a1c;
+    --rose:#e0918c; --rose-wash:#2c1e1c;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 14px 34px -16px rgba(0,0,0,0.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14181c; --paper-raised:#1b2126; --paper-sunken:#101417;
+  --ink:#eae6dc; --ink-soft:#b7bcc2; --ink-faint:#7d848b; --line:#2c343b;
+  --teal:#5fb3ac; --teal-deep:#8fd0c9; --teal-bright:#6cc3bc; --teal-wash:#1c2c2a;
+  --amber:#e0a552; --amber-wash:#2c2416; --sage:#8fbf85; --sage-wash:#1e2a1c;
+  --rose:#e0918c; --rose-wash:#2c1e1c;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 14px 34px -16px rgba(0,0,0,0.7);
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+}
+
+*{box-sizing:border-box;}
+html,body{ height:100%; }
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body);
+  line-height:1.55; font-size:17px; -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+::selection{ background:var(--teal); color:#fff; }
+a{ color:var(--teal-deep); }
+
+/* ================= deck shell ================= */
+#deck{ position:relative; width:100%; height:100vh; }
+.slide{
+  position:absolute; inset:0; display:none; flex-direction:column; justify-content:center; justify-content:safe center;
+  padding: 3.6rem 4.5vw 4.4rem; overflow-y:auto;
+}
+.slide.active{ display:flex; }
+.slide-inner{ max-width:1320px; margin:0 auto; width:100%; }
+.slide.center .slide-inner{ margin:auto; }
+
+@keyframes riseIn{ from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:none; } }
+.slide.active .kicker, .slide.active .headline, .slide.active .lede{ animation:riseIn .55s ease both; }
+.slide.active .lede{ animation-delay:.08s; }
+.slide.active .anim-block{ animation:riseIn .6s ease both; animation-delay:.14s; }
+
+/* generic staggered-reveal utility for card grids / lists */
+.reveal-grid > *{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.reveal-grid.show > *{ opacity:1; transform:none; }
+.reveal-grid > *:nth-child(1){ transition-delay:.04s; } .reveal-grid > *:nth-child(2){ transition-delay:.09s; }
+.reveal-grid > *:nth-child(3){ transition-delay:.14s; } .reveal-grid > *:nth-child(4){ transition-delay:.19s; }
+.reveal-grid > *:nth-child(5){ transition-delay:.24s; } .reveal-grid > *:nth-child(6){ transition-delay:.29s; }
+.reveal-grid > *:nth-child(7){ transition-delay:.34s; } .reveal-grid > *:nth-child(8){ transition-delay:.39s; }
+.reveal-grid > *:nth-child(9){ transition-delay:.44s; } .reveal-grid > *:nth-child(10){ transition-delay:.49s; }
+
+.kicker{
+  font-family:var(--font-mono); font-size:0.92rem; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--teal); font-weight:600; margin:0 0 0.9rem; display:flex; align-items:center; gap:0.55em;
+}
+.kicker::before{ content:""; width:9px; height:9px; border-radius:50%; background:var(--teal); }
+h1.headline{
+  font-family:var(--font-display); font-weight:600; font-size:clamp(2.3rem,4.6vw,3.6rem);
+  margin:0 0 0.9rem; text-wrap:balance; letter-spacing:-0.01em; line-height:1.1;
+}
+.lede{ font-size:1.32rem; line-height:1.55; color:var(--ink-soft); max-width:70ch; margin:0 0 1.5rem; }
+
+/* top / bottom chrome */
+#topbar{
+  position:fixed; top:0; left:0; right:0; height:2.8rem; display:flex; align-items:center;
+  justify-content:space-between; padding:0 1.4rem; font-family:var(--font-mono); font-size:0.8rem;
+  color:var(--ink-faint); letter-spacing:0.06em; z-index:40; pointer-events:none;
+}
+#topbar b{ color:var(--ink-soft); font-weight:600; }
+#navbar{
+  position:fixed; bottom:0; left:0; right:0; height:4rem; display:flex; align-items:center;
+  gap:0.9rem; padding:0 1.2rem; background:var(--paper-raised); border-top:1px solid var(--line); z-index:50;
+}
+.navbtn{
+  font-family:var(--font-mono); font-size:0.85rem; letter-spacing:0.04em; color:var(--ink);
+  background:var(--paper); border:1px solid var(--line); border-radius:7px; padding:0.5rem 0.9rem;
+  cursor:pointer; display:flex; align-items:center; gap:0.35em;
+}
+.navbtn:hover{ border-color:var(--teal); color:var(--teal-deep); }
+.navbtn:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+.progress-wrap{ flex:1; height:7px; background:var(--paper-sunken); border-radius:99px; overflow:hidden; }
+.progress-fill{ height:100%; background:var(--teal); border-radius:99px; transition:width .35s ease; }
+.slide-count{ font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-faint); white-space:nowrap; }
+
+/* TOC drawer */
+#tocveil{ position:fixed; inset:0; background:rgba(20,24,28,0.35); z-index:60; display:none; }
+#tocveil.open{ display:block; }
+#toc{
+  position:fixed; top:0; bottom:0; left:0; width:min(360px,86vw); background:var(--paper-raised);
+  border-right:1px solid var(--line); z-index:61; transform:translateX(-100%); transition:transform .3s ease;
+  overflow-y:auto; padding:1.4rem 1.2rem 2rem;
+}
+#toc.open{ transform:none; }
+#toc h3{ font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-faint); margin:1.1rem 0 0.4rem; }
+#toc h3:first-child{ margin-top:0.2rem; }
+.toc-item{
+  display:block; width:100%; text-align:left; background:none; border:none; padding:0.45rem 0.55rem;
+  border-radius:6px; color:var(--ink-soft); font-size:0.94rem; cursor:pointer; font-family:var(--font-body);
+}
+.toc-item:hover{ background:var(--teal-wash); color:var(--ink); }
+.toc-item.current{ background:var(--teal); color:#fff; }
+
+/* ================= components ================= */
+.story-quote{
+  font-family:var(--font-display); font-style:italic; font-size:1.62rem; line-height:1.48;
+  color:var(--ink); border-left:4px solid var(--teal); padding:0.2rem 0 0.2rem 1.3rem; margin:0.7rem 0 1.6rem;
+  max-width:58ch;
+}
+.example-box{ background:var(--amber-wash); border-radius:12px; padding:1.15rem 1.4rem; margin:1rem 0; border-left:4px solid var(--amber); }
+.example-box .lbl{ font-family:var(--font-mono); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--amber); font-weight:700; display:block; margin-bottom:0.45rem; }
+.example-box p{ margin:0.3rem 0; color:var(--ink); font-size:1.12rem; line-height:1.5; }
+
+.presenter-note{
+  position:absolute; top:1.3rem; right:1.6rem; font-family:var(--font-mono); font-size:0.76rem;
+  color:var(--ink-faint); border:1px dashed var(--line); border-radius:6px; padding:0.4rem 0.7rem; max-width:260px;
+  text-align:right;
+}
+.presenter-note b{ color:var(--ink-soft); }
+.presenter-note.inline{ position:static; display:block; text-align:left; max-width:100%; padding:0.7rem 0.9rem; }
+
+.further-reading{ margin-top:1.5rem; padding-top:1.2rem; border-top:1px solid var(--line); }
+.further-reading .fr-label{ font-family:var(--font-mono); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-faint); margin-bottom:0.7rem; display:block; }
+.fr-links{ display:flex; flex-wrap:wrap; gap:0.6rem; }
+.fr-links a{ font-family:var(--font-mono); font-size:0.85rem; color:var(--teal-deep); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:0.45rem 0.85rem; background:var(--paper-raised); }
+.fr-links a:hover{ border-color:var(--teal); background:var(--teal-wash); }
+
+/* ---------- real-world use-case columns + copyable prompts ---------- */
+.usecase-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; margin-top:1.1rem; }
+.usecase-grid.cols-2{ grid-template-columns:1fr 1fr; }
+@media(max-width:980px){ .usecase-grid, .usecase-grid.cols-2{ grid-template-columns:1fr; } }
+.usecase-col{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:14px; padding:1.2rem 1.3rem; display:flex; flex-direction:column; gap:0.85rem; }
+.usecase-grid:not(.cols-2) .usecase-col:nth-child(2){ border-top-color:var(--amber); }
+.usecase-grid:not(.cols-2) .usecase-col:nth-child(3){ border-top-color:var(--sage); }
+.usecase-grid.cols-2 .usecase-col:nth-child(2){ border-top-color:var(--amber); }
+.usecase-col h4{ margin:0; font-family:var(--font-display); font-weight:600; font-size:1.2rem; }
+.uc-label{ font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:0.35rem; display:block; }
+.uc-section p{ margin:0; font-size:0.94rem; color:var(--ink-soft); line-height:1.48; }
+.uc-outcome{ background:var(--teal-wash); border-radius:9px; padding:0.75rem 0.85rem; }
+.uc-outcome p{ color:var(--ink); font-size:0.9rem; }
+
+.prompt-block{ position:relative; background:var(--paper-sunken); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem; }
+.prompt-block .prompt-text{ margin:0; font-family:var(--font-mono); font-size:0.82rem; line-height:1.55; color:var(--ink); white-space:pre-wrap; padding-right:3.4rem; }
+.copy-btn{ position:absolute; top:0.6rem; right:0.6rem; font-family:var(--font-mono); font-size:0.7rem; background:var(--paper-raised); border:1px solid var(--line); border-radius:6px; padding:0.3rem 0.6rem; cursor:pointer; color:var(--ink-soft); }
+.copy-btn:hover{ border-color:var(--teal); color:var(--teal-deep); }
+.copy-btn.copied{ background:var(--teal); color:#fff; border-color:var(--teal); }
+.rtccf-block.mini{ padding:0.5rem 0.85rem; font-size:0.8rem; opacity:1; transform:none; }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; }
+@media (max-width:760px){ .two-col{ grid-template-columns:1fr; } }
+.compare-card{ background:var(--paper-raised); border:1px solid var(--line); border-left:4px solid var(--ink-faint); border-radius:12px; padding:1.3rem 1.5rem; }
+.compare-card .clbl{ font-family:var(--font-mono); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:0.6rem; display:block; }
+.compare-card.strong{ border-left-color:var(--teal); box-shadow:var(--shadow); }
+.compare-card.strong .clbl{ color:var(--teal-deep); }
+.compare-card p{ margin:0.4rem 0; font-size:1.12rem; line-height:1.5; color:var(--ink-soft); }
+.compare-card p.out{ font-style:italic; color:var(--ink); }
+
+/* domain / feature grid */
+.domain-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.1rem; margin:1.2rem 0; }
+@media(max-width:760px){ .domain-grid{ grid-template-columns:1fr; } }
+.domain-card{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:12px; padding:1.3rem 1.4rem; }
+.domain-card:nth-child(4n+2){ border-top-color:var(--amber); }
+.domain-card:nth-child(4n+3){ border-top-color:var(--sage); }
+.domain-card:nth-child(4n+4){ border-top-color:var(--rose); }
+.domain-card .dlabel{ font-family:var(--font-mono); font-size:0.82rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal-deep); margin-bottom:0.5rem; display:block; }
+.domain-card p{ margin:0; font-size:1.08rem; line-height:1.5; color:var(--ink-soft); }
+.domain-card p b{ color:var(--ink); }
+
+/* tables */
+.tbl-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin:1.1rem 0; box-shadow:var(--shadow); }
+table{ width:100%; border-collapse:collapse; font-size:1.03rem; min-width:560px; }
+thead th{ text-align:left; background:var(--paper-raised); font-family:var(--font-mono); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); padding:0.75rem 0.95rem; border-bottom:1px solid var(--line); }
+tbody td{ padding:0.8rem 0.95rem; border-bottom:1px solid var(--line); color:var(--ink-soft); vertical-align:top; }
+tbody tr:last-child td{ border-bottom:none; }
+tbody td b{ color:var(--ink); }
+td.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* ---------- timeline (reveal-once, Part 1) ---------- */
+.timeline-anim{ position:relative; margin:1.5rem 0; padding-left:2rem; max-height:58vh; overflow-y:auto; }
+.timeline-anim::before{ content:""; position:absolute; left:6px; top:8px; bottom:8px; width:3px; background:var(--line); border-radius:2px; }
+.tl-item{ position:relative; padding-bottom:1.4rem; opacity:0; transform:translateY(14px); transition:opacity .45s ease, transform .45s ease; }
+.timeline-anim.show .tl-item{ opacity:1; transform:none; }
+.tl-item:nth-child(1){ transition-delay:.03s; } .tl-item:nth-child(2){ transition-delay:.11s; }
+.tl-item:nth-child(3){ transition-delay:.19s; } .tl-item:nth-child(4){ transition-delay:.27s; }
+.tl-item:nth-child(5){ transition-delay:.35s; } .tl-item:nth-child(6){ transition-delay:.43s; }
+.tl-item:nth-child(7){ transition-delay:.51s; } .tl-item:nth-child(8){ transition-delay:.59s; }
+.tl-item::before{ content:""; position:absolute; left:-2rem; top:4px; width:15px; height:15px; border-radius:50%; background:var(--paper); border:3px solid var(--teal); }
+.tl-year{ font-family:var(--font-mono); font-size:0.92rem; color:var(--teal-deep); font-weight:700; }
+.tl-item h4{ margin:0.2rem 0 0.25rem; font-size:1.22rem; font-weight:700; }
+.tl-item p{ margin:0; color:var(--ink-soft); font-size:1.05rem; line-height:1.5; }
+
+/* ---------- figure badges (historical people, vector avatars) ---------- */
+.figure-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:1.2rem 0.9rem; margin:1.2rem 0; }
+@media(max-width:820px){ .figure-grid{ grid-template-columns:repeat(3,1fr); } }
+@media(max-width:520px){ .figure-grid{ grid-template-columns:repeat(2,1fr); } }
+.figure-card{ text-align:center; }
+.figure-badge{
+  width:80px; height:80px; border-radius:50%; margin:0 auto 0.55rem; display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:600; font-size:1.3rem; color:#fff;
+  background:linear-gradient(155deg, var(--teal-bright), var(--teal-deep)); box-shadow:var(--shadow);
+}
+img.figure-badge{ object-fit:cover; }
+.figure-card .fname{ font-size:0.92rem; font-weight:700; color:var(--ink); line-height:1.3; }
+.figure-card .frole{ font-size:0.8rem; color:var(--ink-faint); }
+
+.spotlight{ display:grid; grid-template-columns:180px 1fr; gap:2rem; align-items:center; margin:0.8rem 0 1.2rem; }
+@media(max-width:640px){ .spotlight{ grid-template-columns:1fr; } }
+.spotlight .figure-badge{ width:170px; height:170px; font-size:3.2rem; margin:0; }
+.spotlight .fname{ font-size:1.2rem; }
+.spotlight-text p{ margin:0.5rem 0; color:var(--ink-soft); font-size:1.15rem; line-height:1.55; }
+
+/* ---------- relation rings ---------- */
+.rel-diagram{ display:flex; align-items:center; justify-content:center; gap:3rem; flex-wrap:wrap; margin:1.4rem 0; }
+.rel-rings{ position:relative; width:300px; height:300px; flex:none; }
+.ring{ position:absolute; border-radius:50%; display:flex; align-items:flex-start; justify-content:center; padding-top:14px; font-family:var(--font-mono); font-weight:600; letter-spacing:0.04em; }
+.ring.ai{ inset:0; background:var(--teal-wash); border:2px solid var(--teal); font-size:0.92rem; color:var(--teal-deep); }
+.ring.ml{ inset:44px; background:var(--paper-raised); border:2px solid var(--teal); font-size:0.88rem; color:var(--teal-deep); }
+.ring.dl{ inset:90px; background:var(--teal-wash); border:2px solid var(--teal-deep); font-size:0.82rem; color:var(--teal-deep); }
+.ring.llm{ inset:134px; background:var(--teal-deep); border:none; color:#fff; font-size:0.76rem; align-items:center; padding-top:0; }
+.rel-side{ max-width:340px; font-size:1.08rem; line-height:1.55; color:var(--ink-soft); }
+.chip-row{ display:flex; gap:0.6rem; margin-top:0.9rem; flex-wrap:wrap; }
+.rel-chip{ font-family:var(--font-mono); font-size:0.82rem; border:1px solid var(--line); border-radius:7px; padding:0.35rem 0.7rem; }
+
+/* ---------- RTCCF chain ---------- */
+.rtccf-chain{ display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; margin:1.3rem 0 1.6rem; }
+.rtccf-block{ padding:0.95rem 1.3rem; border-radius:10px; font-family:var(--font-mono); font-weight:600; font-size:1.05rem; color:#fff;
+  opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; box-shadow:var(--shadow); }
+.timeline-anim.show ~ .rtccf-chain .rtccf-block, .rtccf-chain.show .rtccf-block{ opacity:1; transform:none; }
+.rtccf-block:nth-child(1){ background:#b5651d; transition-delay:.05s; }
+.rtccf-block:nth-child(3){ background:#5c6570; transition-delay:.15s; }
+.rtccf-block:nth-child(5){ background:var(--amber); transition-delay:.25s; }
+.rtccf-block:nth-child(7){ background:var(--teal-bright); transition-delay:.35s; }
+.rtccf-block:nth-child(9){ background:var(--sage); transition-delay:.45s; }
+.rtccf-arrow{ color:var(--ink-faint); font-family:var(--font-mono); font-size:1.3rem; opacity:0; transition:opacity .4s ease; }
+.rtccf-chain.show .rtccf-arrow{ opacity:1; }
+
+/* ---------- phase cyclers (LLM pipeline / RAG) ---------- */
+.cycler{ margin:1.2rem 0; }
+.cycler-stage{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; min-height:300px;
+  display:flex; flex-direction:column; padding:1.7rem 1.9rem; position:relative; box-shadow:var(--shadow);
+}
+.cycler-label{ font-family:var(--font-mono); font-size:0.88rem; color:var(--teal-deep); font-weight:600; margin-bottom:1.2rem; }
+.phase{ display:none; flex:1; flex-direction:column; justify-content:center; opacity:1; }
+.phase.active{ display:flex; }
+
+.chat-bubble{ background:var(--paper-sunken); border-radius:12px; padding:0.9rem 1.2rem; font-family:var(--font-mono); font-size:1.15rem; max-width:fit-content; }
+.chat-bubble.reply{ background:var(--teal-wash); }
+.token-row{ display:flex; gap:0.6rem; flex-wrap:wrap; }
+.token-chip{ background:var(--paper-sunken); border:1px solid var(--line); border-radius:7px; padding:0.5rem 0.8rem; font-family:var(--font-mono); font-size:1.05rem; text-align:center; }
+.token-chip small{ display:block; font-size:0.74rem; color:var(--ink-faint); margin-top:0.2rem; }
+.token-chip.hi{ border-color:var(--teal); background:var(--teal-wash); color:var(--teal-deep); font-weight:600; }
+
+.net-svg{ width:100%; max-width:560px; height:auto; display:block; margin:0 auto; }
+.net-mesh line{ stroke:var(--line); stroke-width:1; }
+.net-lane{ fill:none; stroke:var(--teal); stroke-width:2.5; opacity:.5; }
+.net-node-col circle{ fill:var(--teal); opacity:.9; }
+.net-particle{ fill:var(--teal-bright); filter:drop-shadow(0 0 4px var(--teal-bright)); }
+.net-label{ font-family:var(--font-mono); font-size:13px; fill:var(--ink-faint); }
+@media (prefers-reduced-motion: reduce){ .net-particle{ display:none; } }
+
+.attn-svg{ width:100%; max-width:480px; height:auto; display:block; margin:0 auto; }
+.attn-arc{ fill:none; stroke:var(--teal-deep); stroke-linecap:round; }
+.attn-chip{ fill:var(--paper-sunken); stroke:var(--line); stroke-width:1; }
+.attn-chip.attn-current{ fill:var(--teal-wash); stroke:var(--teal); stroke-width:1.5; }
+.attn-text{ font-family:var(--font-mono); font-size:14px; fill:var(--ink-soft); }
+.attn-current-text{ fill:var(--teal-deep); font-weight:600; }
+
+.prob-list{ display:flex; flex-direction:column; gap:0.65rem; }
+.prob-row{ display:grid; grid-template-columns:140px 1fr 56px; align-items:center; gap:0.8rem; font-family:var(--font-mono); font-size:1rem; }
+.prob-track{ height:12px; background:var(--paper-sunken); border-radius:99px; overflow:hidden; }
+.prob-fill{ height:100%; background:var(--ink-faint); border-radius:99px; }
+.prob-row.top .prob-fill{ background:var(--teal); }
+.prob-row.top{ font-weight:700; color:var(--ink); }
+
+.phase-dots{ display:flex; gap:0.5rem; justify-content:center; margin-top:1.2rem; }
+.pdot{ width:10px; height:10px; border-radius:50%; background:var(--line); border:none; cursor:pointer; padding:0; }
+.pdot.active{ background:var(--teal); width:26px; border-radius:6px; }
+
+/* roadmap cards (4-session series) */
+.roadmap{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.1rem; margin:1.3rem 0; }
+@media(max-width:820px){ .roadmap{ grid-template-columns:repeat(2,1fr); } }
+.rm-card{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--ink-faint); border-radius:13px; padding:1.3rem; position:relative; }
+.rm-card:nth-child(2){ border-top-color:var(--amber); }
+.rm-card:nth-child(3){ border-top-color:var(--sage); }
+.rm-card:nth-child(4){ border-top-color:var(--rose); }
+.rm-card.now{ border-top-color:var(--teal); box-shadow:0 0 0 3px var(--teal-wash); }
+.rm-card .rm-date{ font-family:var(--font-mono); font-size:0.82rem; color:var(--ink-faint); }
+.rm-card .rm-num{ font-family:var(--font-mono); font-size:0.85rem; color:var(--teal-deep); font-weight:700; margin-bottom:0.4rem; }
+.rm-card h4{ margin:0.5rem 0 0.3rem; font-size:1.12rem; line-height:1.35; }
+.rm-card .rm-tag{ position:absolute; top:-12px; right:14px; background:var(--teal); color:#fff; font-family:var(--font-mono); font-size:0.74rem; padding:0.25rem 0.6rem; border-radius:99px; }
+
+/* milestone breadcrumb (recap slide) */
+.milestones{ display:flex; align-items:stretch; gap:0; margin:1.6rem 0; flex-wrap:wrap; }
+.ms-card{ flex:1; min-width:220px; background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--ink-faint); border-radius:13px; padding:1.4rem 1.5rem; position:relative; }
+.ms-card + .ms-card{ margin-left:1.1rem; }
+.ms-card:nth-child(2){ border-top-color:var(--amber); }
+.ms-card.here{ border-top-color:var(--teal); background:var(--teal-wash); }
+.ms-num{ font-family:var(--font-mono); font-size:0.82rem; color:var(--ink-faint); }
+.ms-card.here .ms-num{ color:var(--teal-deep); }
+.ms-card h4{ margin:0.4rem 0 0.4rem; font-size:1.2rem; }
+.ms-card p{ margin:0; font-size:1.02rem; line-height:1.45; color:var(--ink-soft); }
+@media(max-width:760px){ .ms-card + .ms-card{ margin-left:0; margin-top:1.1rem; } .milestones{ flex-direction:column; } }
+
+/* presenter bio slide */
+.bio-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:2.6rem; align-items:start; margin-top:0.8rem; }
+@media(max-width:820px){ .bio-grid{ grid-template-columns:1fr; } }
+.cred-list{ list-style:none; margin:0; padding:0; display:grid; gap:1rem; }
+.cred-list li{ position:relative; padding-left:1.8rem; font-size:1.15rem; color:var(--ink-soft); line-height:1.5; }
+.cred-list li::before{ content:""; position:absolute; left:0; top:0.35em; width:11px; height:11px; border:2.5px solid var(--teal); border-radius:3px; }
+.cred-list li b{ color:var(--ink); }
+.cred-list li.cred-note{ font-style:italic; color:var(--ink-faint); }
+.cred-list li.cred-note::before{ border-color:var(--ink-faint); }
+
+.bio-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:1.6rem 1.7rem; box-shadow:var(--shadow); }
+.bio-avatar{ width:76px; height:76px; border-radius:50%; object-fit:cover; display:block; margin-bottom:1.1rem; box-shadow:0 0 0 3px var(--paper-raised), 0 0 0 5px var(--teal-wash); }
+.bio-name{ font-family:var(--font-display); font-weight:600; font-size:1.4rem; margin-bottom:0.5rem; }
+.bio-role{ font-size:1rem; color:var(--ink-soft); line-height:1.55; margin-bottom:0.9rem; }
+.bio-loc{ font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-faint); letter-spacing:0.03em; margin-bottom:1rem; }
+.bio-links{ display:flex; flex-direction:column; gap:0.45rem; border-top:1px solid var(--line); padding-top:0.9rem; }
+.bio-links a{ font-family:var(--font-mono); font-size:0.9rem; color:var(--teal-deep); text-decoration:none; border-bottom:1px solid var(--teal-wash); width:fit-content; }
+.bio-links a:hover{ border-bottom-color:var(--teal); }
+
+.logo-strip{ display:flex; flex-wrap:wrap; gap:0.7rem; margin-top:2.1rem; padding-top:1.5rem; border-top:1px solid var(--line); }
+.logo-chip{ font-family:var(--font-mono); font-size:0.88rem; letter-spacing:0.03em; color:var(--ink-faint); border:1px solid var(--line); border-radius:8px; padding:0.5rem 0.95rem; background:var(--paper-raised); }
+.logo-chip.accent{ color:var(--teal-deep); border-color:var(--teal); }
+
+/* pillars */
+.pillars{ display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin:1.4rem 0; }
+@media(max-width:820px){ .pillars{ grid-template-columns:repeat(2,1fr); } }
+.pillar{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:13px; padding:1.3rem; text-align:center; }
+.pillar:nth-child(2){ border-top-color:var(--amber); }
+.pillar:nth-child(3){ border-top-color:var(--sage); }
+.pillar:nth-child(4){ border-top-color:var(--rose); }
+.pillar .pnum{ font-family:var(--font-mono); color:var(--teal-deep); font-weight:700; font-size:0.92rem; }
+.pillar h4{ margin:0.5rem 0 0.3rem; font-size:1.15rem; }
+.pillar p{ margin:0; font-size:0.98rem; line-height:1.4; color:var(--ink-soft); }
+
+.agenda-list{ list-style:none; margin:1.2rem 0; padding:0; display:grid; gap:0.7rem; }
+.agenda-list li{ display:grid; grid-template-columns:2.4rem 1fr; gap:0.8rem; align-items:baseline; font-size:1.18rem; line-height:1.45; color:var(--ink-soft); }
+.agenda-list li b{ color:var(--ink); }
+.agenda-list .an{ font-family:var(--font-mono); color:var(--teal-deep); font-weight:700; }
+
+.closing-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1.6rem; margin-top:1.2rem; }
+@media(max-width:700px){ .closing-cols{ grid-template-columns:1fr; } }
+.closing-cols .cc-head{ font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--teal-deep); margin-bottom:0.6rem; }
+
+.replay-btn{
+  font-family:var(--font-mono); font-size:0.85rem; color:var(--teal-deep); background:none; border:1px solid var(--teal);
+  border-radius:8px; padding:0.4rem 0.85rem; cursor:pointer; align-self:flex-start; margin-top:0.9rem;
+}
+
+/* ================= Session 1 (Leading with AI) additions ================= */
+.btn{ font-family:var(--font-mono); font-size:0.82rem; letter-spacing:0.03em; color:var(--ink); background:var(--paper-raised);
+  border:1px solid var(--line); border-radius:8px; padding:0.5rem 0.95rem; cursor:pointer; }
+.btn:hover{ border-color:var(--teal); color:var(--teal-deep); }
+.btn.primary{ background:var(--teal); color:#fff; border-color:var(--teal); }
+.btn.primary:hover{ background:var(--teal-deep); color:#fff; }
+.btn:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+.note-small{ font-size:0.95rem; color:var(--ink-faint); margin:0.8rem 0 0; line-height:1.5; }
+.live-pill{ display:inline-block; font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase;
+  background:var(--rose-wash); color:var(--rose); border:1px solid var(--rose); border-radius:99px; padding:0.15rem 0.6rem; vertical-align:middle; margin-left:0.6rem; }
+
+/* ---------- 6-session roadmap ---------- */
+.phase-strip{ display:grid; grid-template-columns:repeat(6,1fr); gap:0.5rem; margin:1.1rem 0 0.7rem; }
+.ph{ border-radius:9px; padding:0.55rem 0.8rem; font-family:var(--font-mono); font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase;
+  color:#fff; display:flex; flex-direction:column; gap:0.1rem; }
+.ph small{ font-size:0.68rem; opacity:0.85; letter-spacing:0.04em; text-transform:none; }
+.ph.p1{ background:var(--teal); grid-column:span 1; }
+.ph.p2{ background:var(--amber); grid-column:span 2; }
+.ph.p3{ background:var(--rose); }
+.ph.p4{ background:var(--sage); }
+.ph.p5{ background:#5c6570; }
+.rm6{ display:grid; grid-template-columns:repeat(6,1fr); gap:0.5rem; margin:0 0 1.1rem; }
+.rm6 .rm-card{ padding:1.1rem 0.9rem; border-top-width:4px; display:flex; flex-direction:column; gap:0.15rem; }
+.rm6 .rm-card:nth-child(2), .rm6 .rm-card:nth-child(3){ border-top-color:var(--amber); }
+.rm6 .rm-card:nth-child(4){ border-top-color:var(--rose); }
+.rm6 .rm-card:nth-child(5){ border-top-color:var(--sage); }
+.rm6 .rm-card:nth-child(6){ border-top-color:#5c6570; }
+.rm6 .rm-card.now{ border-top-color:var(--teal); }
+.rm6 .rm-card h4{ font-size:1.02rem; margin:0.35rem 0 0.4rem; }
+.rm6 .rm-out{ font-size:0.88rem; line-height:1.4; color:var(--ink-soft); margin-top:auto; padding-top:0.5rem; border-top:1px dashed var(--line); }
+@media(max-width:1100px){ .rm6, .phase-strip{ grid-template-columns:repeat(3,1fr); } .ph.p2{ grid-column:span 1; } }
+@media(max-width:640px){ .rm6, .phase-strip{ grid-template-columns:repeat(2,1fr); } }
+
+/* ---------- agenda redesign ---------- */
+.runbar{ display:flex; gap:3px; margin:1rem 0 1.2rem; height:44px; }
+.rb{ border-radius:7px; display:flex; align-items:center; justify-content:center; gap:0.4rem; font-family:var(--font-mono);
+  font-size:0.7rem; letter-spacing:0.04em; color:#fff; min-width:0; overflow:hidden; white-space:nowrap; padding:0 0.3rem; }
+.rb em{ font-style:normal; opacity:0.8; }
+.rb.s0{ background:#7b838a; } .rb.s1{ background:var(--teal); } .rb.s2{ background:var(--amber); } .rb.s3{ background:var(--rose); }
+.rb.s4{ background:var(--sage); } .rb.s5{ background:var(--teal-deep); } .rb.s6{ background:#5c6570; }
+.ag-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+@media(max-width:1000px){ .ag-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:640px){ .ag-grid{ grid-template-columns:1fr; } }
+.ag-card{ background:var(--paper-raised); border:1px solid var(--line); border-top:4px solid var(--teal); border-radius:13px; padding:1rem 1.15rem 1.05rem; }
+.ag-card.c2{ border-top-color:var(--amber); } .ag-card.c3{ border-top-color:var(--rose); } .ag-card.c4{ border-top-color:var(--sage); }
+.ag-card.c5{ border-top-color:var(--teal-deep); } .ag-card.c6{ border-top-color:#5c6570; }
+.ag-time{ font-family:var(--font-mono); font-size:0.78rem; color:var(--ink-faint); letter-spacing:0.05em; }
+.ag-card h4{ margin:0.2rem 0 0.55rem; font-family:var(--font-display); font-size:1.2rem; font-weight:600; }
+.ag-card ul{ list-style:none; margin:0; padding:0; display:grid; gap:0.4rem; }
+.ag-card li{ display:grid; grid-template-columns:1.9rem 1fr; gap:0.3rem; font-size:0.98rem; line-height:1.35; color:var(--ink-soft); align-items:baseline; }
+.ag-card li .n{ font-family:var(--font-mono); font-weight:700; color:var(--teal-deep); font-size:0.82rem; }
+.ag-card li b{ color:var(--ink); font-weight:600; }
+.tag{ display:inline-block; font-family:var(--font-mono); font-size:0.64rem; letter-spacing:0.06em; text-transform:uppercase;
+  border-radius:99px; padding:0.08rem 0.5rem; margin-left:0.3rem; vertical-align:middle; white-space:nowrap; }
+.tag.game{ background:var(--amber-wash); color:var(--amber); border:1px solid var(--amber); }
+.tag.demo{ background:var(--rose-wash); color:var(--rose); border:1px solid var(--rose); }
+.tag.vote{ background:var(--sage-wash); color:var(--sage); border:1px solid var(--sage); }
+.tag.tool{ background:var(--teal-wash); color:var(--teal-deep); border:1px solid var(--teal); }
+
+/* ---------- tool tour ---------- */
+.tool-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1.1rem 0; }
+@media(max-width:900px){ .tool-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:600px){ .tool-grid{ grid-template-columns:1fr; } }
+.tool-card{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:12px; padding:1rem 1.15rem; }
+.tool-card:nth-child(3n+2){ border-top-color:var(--amber); } .tool-card:nth-child(3n+3){ border-top-color:var(--sage); }
+.tool-card h4{ margin:0 0 0.15rem; font-family:var(--font-display); font-size:1.15rem; font-weight:600; }
+.tool-card .tc-sub{ font-size:0.9rem; color:var(--ink-faint); margin:0 0 0.6rem; }
+.tool-card .fr-links a{ font-size:0.78rem; padding:0.3rem 0.65rem; }
+.tool-card .tc-try{ font-size:0.9rem; color:var(--ink-soft); margin:0.6rem 0 0; font-style:italic; }
+
+/* ---------- LLM milestones ---------- */
+.ms-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:0.9rem; margin:1.1rem 0; }
+@media(max-width:1000px){ .ms-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:560px){ .ms-grid{ grid-template-columns:1fr; } }
+.mg{ background:var(--paper-raised); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem; position:relative; }
+.mg .yr{ font-family:var(--font-mono); font-size:0.88rem; font-weight:700; color:var(--teal-deep); }
+.mg h4{ margin:0.2rem 0 0.3rem; font-size:1.08rem; line-height:1.3; }
+.mg p{ margin:0; font-size:0.93rem; line-height:1.45; color:var(--ink-soft); }
+.mg.hot{ border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-wash); }
+.shift-row{ display:flex; flex-wrap:wrap; gap:0.6rem; align-items:center; font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-soft); }
+.shift-row .chip{ border:1px solid var(--teal); background:var(--teal-wash); color:var(--teal-deep); border-radius:99px; padding:0.3rem 0.8rem; }
+
+/* ---------- next-word game ---------- */
+.game-stage{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:1.6rem 1.9rem; box-shadow:var(--shadow); }
+.game-top{ display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:0.82rem; color:var(--ink-faint); margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem; }
+.nw-prompt{ font-family:var(--font-display); font-size:clamp(1.8rem,3.2vw,2.7rem); line-height:1.25; margin:0.4rem 0 1.2rem; }
+.nw-blank{ display:inline-block; min-width:5ch; border-bottom:4px solid var(--teal); color:var(--teal-deep); font-weight:600; text-align:center; padding:0 0.4rem; }
+.nw-answers{ min-height:3.4rem; }
+.nw-hint{ font-size:1.05rem; color:var(--ink-soft); margin:0.8rem 0 0; }
+.nw-ctrl{ display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1.1rem; }
+.prob-list.wide .prob-row{ grid-template-columns:170px 1fr 56px; }
+.prob-fill{ transition:width .7s cubic-bezier(.2,.8,.2,1); }
+.nw-lesson{ margin-top:0.9rem; font-size:1.05rem; color:var(--ink); background:var(--teal-wash); border-radius:9px; padding:0.7rem 1rem; display:none; }
+.nw-lesson.show{ display:block; }
+
+/* ---------- temperature widget ---------- */
+.temp-wrap{ display:grid; grid-template-columns:1.25fr 1fr; gap:1.4rem; align-items:start; margin-top:1rem; }
+@media(max-width:900px){ .temp-wrap{ grid-template-columns:1fr; } }
+.temp-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:1.4rem 1.6rem; box-shadow:var(--shadow); }
+.temp-slider{ display:flex; align-items:center; gap:1rem; margin:0.4rem 0 1.1rem; font-family:var(--font-mono); }
+.temp-slider input[type=range]{ flex:1; accent-color:var(--teal); }
+.temp-val{ font-size:1.5rem; font-weight:700; color:var(--teal-deep); min-width:3.2ch; text-align:right; }
+.temp-draws{ display:flex; flex-wrap:wrap; gap:0.4rem; min-height:2.2rem; margin:0.6rem 0 0.2rem; }
+.draw-chip{ background:var(--teal-wash); border:1px solid var(--teal); color:var(--teal-deep); border-radius:99px; padding:0.2rem 0.8rem; font-family:var(--font-mono); font-size:0.88rem; }
+.platform-list{ list-style:none; margin:0; padding:0; display:grid; gap:0.65rem; }
+.platform-list li{ background:var(--paper-raised); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:10px; padding:0.65rem 0.9rem; font-size:0.95rem; line-height:1.4; color:var(--ink-soft); }
+.platform-list li.best{ border-left-color:var(--amber); box-shadow:0 0 0 2px var(--amber-wash); }
+.platform-list a{ font-weight:700; color:var(--teal-deep); text-decoration:none; border-bottom:1px solid var(--teal-wash); }
+.platform-list .pl-tag{ font-family:var(--font-mono); font-size:0.66rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--amber); display:block; margin-bottom:0.15rem; }
+
+/* ---------- matrices / editable tables ---------- */
+.mx td, .mx th{ text-align:center; } .mx td:first-child, .mx th:first-child{ text-align:left; }
+.dot{ font-size:1.15rem; letter-spacing:0.05em; }
+.dot.lead{ color:var(--teal); } .dot.close{ color:var(--amber); }
+.legend{ display:flex; gap:1.2rem; font-family:var(--font-mono); font-size:0.8rem; color:var(--ink-faint); flex-wrap:wrap; margin:0.4rem 0; }
+td[contenteditable]{ background:var(--amber-wash); outline:none; min-width:9ch; color:var(--ink); font-weight:600; }
+td[contenteditable]:focus{ box-shadow:inset 0 0 0 2px var(--amber); }
+.fr-links a.big{ font-size:1rem; padding:0.7rem 1.2rem; font-weight:600; }
+
+/* ---------- vote tallies ---------- */
+.tally{ display:grid; gap:0.55rem; margin:0.4rem 0; }
+.tally-row{ display:grid; grid-template-columns:150px 1fr 54px; align-items:center; gap:0.7rem; }
+.tally-btn{ font-family:var(--font-mono); font-size:0.85rem; background:var(--paper-raised); border:1px solid var(--line); border-radius:8px; padding:0.55rem 0.7rem; cursor:pointer; color:var(--ink); text-align:left; }
+.tally-btn:hover{ border-color:var(--teal); background:var(--teal-wash); }
+.tally-track{ height:22px; background:var(--paper-sunken); border-radius:99px; overflow:hidden; }
+.tally-fill{ height:100%; width:0; background:var(--teal); border-radius:99px; transition:width .35s ease; }
+.tally-row:nth-child(2) .tally-fill{ background:var(--amber); } .tally-row:nth-child(3) .tally-fill{ background:var(--sage); } .tally-row:nth-child(4) .tally-fill{ background:var(--rose); }
+.tally-n{ font-family:var(--font-mono); font-weight:700; font-size:1.2rem; text-align:right; }
+.tally-foot{ display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:0.74rem; color:var(--ink-faint); margin-top:0.2rem; }
+.tally-foot button{ font-family:var(--font-mono); font-size:0.74rem; background:none; border:1px solid var(--line); border-radius:6px; padding:0.2rem 0.6rem; cursor:pointer; color:var(--ink-soft); }
+
+.steps{ counter-reset:st; list-style:none; margin:0.6rem 0; padding:0; display:grid; gap:0.6rem; }
+.steps li{ counter-increment:st; position:relative; padding-left:2.4rem; font-size:1.08rem; line-height:1.45; color:var(--ink-soft); }
+.steps li::before{ content:counter(st); position:absolute; left:0; top:0; width:1.7rem; height:1.7rem; border-radius:50%; background:var(--teal); color:#fff;
+  font-family:var(--font-mono); font-weight:700; font-size:0.85rem; display:flex; align-items:center; justify-content:center; }
+.steps li b{ color:var(--ink); }
+
+.three-col{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0; }
+@media(max-width:900px){ .three-col{ grid-template-columns:1fr; } }
+.plat-col{ background:var(--paper-raised); border:1px solid var(--line); border-top:4px solid var(--teal); border-radius:13px; padding:1rem 1.15rem; }
+.plat-col:nth-child(2){ border-top-color:var(--amber); } .plat-col:nth-child(3){ border-top-color:var(--sage); }
+.plat-col h4{ margin:0 0 0.2rem; font-family:var(--font-display); font-size:1.25rem; }
+.plat-col .pc-sub{ font-family:var(--font-mono); font-size:0.74rem; color:var(--ink-faint); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:0.6rem; display:block; }
+.plat-col a.pc-link{ font-family:var(--font-mono); font-size:0.82rem; color:var(--teal-deep); }
+
+/* ---------- calculators ---------- */
+.calc{ display:grid; grid-template-columns:1fr 1.1fr; gap:1.3rem; margin-top:0.9rem; align-items:start; }
+@media(max-width:980px){ .calc{ grid-template-columns:1fr; } }
+.calc-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:1.3rem 1.5rem; box-shadow:var(--shadow); }
+.calc-card h4{ margin:0 0 0.8rem; font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
+.fld{ display:grid; grid-template-columns:1fr 130px; gap:0.6rem; align-items:center; margin:0.45rem 0; font-size:0.98rem; color:var(--ink-soft); }
+.fld.wide{ grid-template-columns:1fr; }
+.fld input, .fld select, .fld textarea{ font-family:var(--font-mono); font-size:0.92rem; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:0.45rem 0.6rem; width:100%; }
+.fld textarea{ min-height:64px; resize:vertical; font-family:var(--font-body); }
+.fld input:focus, .fld select:focus, .fld textarea:focus{ outline:2px solid var(--teal); outline-offset:1px; }
+.price-pair{ display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+.big-num{ font-family:var(--font-display); font-size:clamp(2.2rem,4vw,3.2rem); font-weight:600; color:var(--teal-deep); line-height:1.05; }
+.big-sub{ font-family:var(--font-mono); font-size:0.82rem; color:var(--ink-faint); margin-top:0.2rem; }
+.res-split{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.cmp-row{ display:grid; grid-template-columns:96px 1fr 92px; gap:0.7rem; align-items:center; margin:0.45rem 0; font-family:var(--font-mono); font-size:0.88rem; }
+.cmp-track{ height:18px; background:var(--paper-sunken); border-radius:99px; overflow:hidden; }
+.cmp-fill{ height:100%; background:var(--ink-faint); border-radius:99px; transition:width .45s ease; }
+.cmp-row.sel .cmp-fill{ background:var(--teal); } .cmp-row.sel{ font-weight:700; color:var(--ink); }
+.cmp-fill.opt{ background:var(--sage); }
+.cmp-val{ text-align:right; }
+.lever{ display:grid; grid-template-columns:auto 1fr auto; gap:0.7rem; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:0.45rem 0.8rem; margin:0.35rem 0; cursor:pointer; }
+.lever input[type=checkbox]{ width:20px; height:20px; accent-color:var(--teal); cursor:pointer; }
+.lever .lv-t{ font-size:0.98rem; color:var(--ink); line-height:1.3; } .lever .lv-t small{ display:block; color:var(--ink-faint); font-size:0.8rem; }
+.lever .lv-s{ font-family:var(--font-mono); font-size:0.82rem; color:var(--sage); font-weight:700; white-space:nowrap; }
+.lever.on{ border-color:var(--sage); background:var(--sage-wash); }
+.lever select{ font-family:var(--font-mono); font-size:0.8rem; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:6px; padding:0.15rem 0.3rem; margin-left:0.3rem; }
+.saved-badge{ display:inline-block; font-family:var(--font-mono); font-weight:700; color:#fff; background:var(--sage); border-radius:99px; padding:0.2rem 0.8rem; font-size:0.95rem; }
+
+/* ---------- lab timer ---------- */
+.timer-box{ display:flex; align-items:center; gap:1rem; background:var(--paper-raised); border:1px solid var(--line); border-radius:14px; padding:0.9rem 1.3rem; box-shadow:var(--shadow); flex-wrap:wrap; }
+.timer-face{ font-family:var(--font-mono); font-size:3rem; font-weight:700; color:var(--teal-deep); letter-spacing:0.03em; min-width:5.2ch; }
+.timer-face.low{ color:var(--rose); }
+
+/* ---------- cheat sheet ---------- */
+.cheat{ display:grid; grid-template-columns:repeat(3,1fr); gap:0.9rem; margin:0.8rem 0; }
+@media(max-width:1000px){ .cheat{ grid-template-columns:1fr 1fr; } }
+@media(max-width:640px){ .cheat{ grid-template-columns:1fr; } }
+.ch-box{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:11px; padding:0.8rem 1rem; }
+.ch-box:nth-child(3n+2){ border-top-color:var(--amber); } .ch-box:nth-child(3n+3){ border-top-color:var(--sage); }
+.ch-box h5{ margin:0 0 0.35rem; font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--teal-deep); }
+.ch-box ul{ margin:0; padding-left:1.05rem; font-size:0.93rem; line-height:1.42; color:var(--ink-soft); }
+.ch-box li{ margin:0.12rem 0; } .ch-box b{ color:var(--ink); }
+.ch-box code{ font-family:var(--font-mono); font-size:0.85em; background:var(--paper-sunken); padding:0.05rem 0.3rem; border-radius:4px; color:var(--ink); }
+
+@media print{
+  body.print-cheat{ overflow:visible; background:#fff; }
+  body.print-cheat #deck > .slide{ display:none !important; }
+  body.print-cheat #deck > .slide.cheat-slide{ display:block !important; position:static; padding:0.4in; overflow:visible; }
+  body.print-cheat #navbar, body.print-cheat #topbar, body.print-cheat #toc, body.print-cheat #tocveil, body.print-cheat .no-print{ display:none !important; }
+  body.print-cheat .slide-inner{ max-width:none; }
+  body.print-cheat .ch-box, body.print-cheat .kicker, body.print-cheat h1{ break-inside:avoid; }
+  @page{ size:A4; margin:0.3in; }
+}
+
+tbody td a{ color:var(--teal-deep); font-weight:600; text-decoration:none; border-bottom:1px solid var(--teal); }
+tbody td a:hover{ background:var(--teal-wash); }
+
+.ring.gen{ inset:112px; background:var(--teal-deep); border:none; color:#fff; font-size:0.74rem; align-items:center; padding-top:0; }
+
+
+/* ================= Session 2 additions ================= */
+.rm-tag.done{ background:var(--ink-faint); }
+.rb.s7{ background:#8a6d3b; }
+.milestones.three .ms-card:nth-child(2){ border-top-color:var(--amber); }
+.milestones.three .ms-card:nth-child(1){ border-top-color:var(--ink-faint); }
+
+/* ---------- stage strip (new-hire story) ---------- */
+.stages{ display:flex; align-items:stretch; gap:0.5rem; margin:1rem 0 1.1rem; flex-wrap:wrap; }
+.stg{ flex:1; min-width:190px; background:var(--paper-raised); border:1px solid var(--line); border-top:4px solid var(--ink-faint);
+  border-radius:12px; padding:0.8rem 1rem; display:flex; gap:0.75rem; align-items:flex-start; opacity:0.62; }
+.stg .sn{ flex:none; width:1.9rem; height:1.9rem; border-radius:50%; background:var(--ink-faint); color:#fff; font-family:var(--font-mono);
+  font-weight:700; font-size:0.9rem; display:flex; align-items:center; justify-content:center; }
+.stg b{ display:block; font-size:1.02rem; line-height:1.25; color:var(--ink); }
+.stg small{ display:block; font-size:0.82rem; color:var(--ink-soft); line-height:1.35; margin-top:0.15rem; }
+.stg:nth-child(1){ border-top-color:var(--teal); } .stg:nth-child(1) .sn{ background:var(--teal); }
+.stg:nth-child(2){ border-top-color:var(--amber); } .stg:nth-child(2) .sn{ background:var(--amber); }
+.stg:nth-child(3){ border-top-color:var(--rose); } .stg:nth-child(3) .sn{ background:var(--rose); }
+.stg:nth-child(4){ border-top-color:var(--sage); } .stg:nth-child(4) .sn{ background:var(--sage); }
+.stages.all .stg, .stg.on{ opacity:1; }
+.stg.on{ box-shadow:var(--shadow); background:var(--paper-raised); }
+
+/* ---------- scene animation helpers ---------- */
+.scene-cap{ margin:0.9rem 0 0; font-size:1.08rem; line-height:1.5; color:var(--ink-soft); max-width:75ch; }
+.scene-cap b{ color:var(--ink); }
+.stagger > *{ opacity:0; }
+.phase.active .stagger > *{ animation:riseIn .6s ease forwards; }
+.phase.active .stagger > *:nth-child(1){ animation-delay:.1s; } .phase.active .stagger > *:nth-child(2){ animation-delay:.55s; }
+.phase.active .stagger > *:nth-child(3){ animation-delay:1.0s; } .phase.active .stagger > *:nth-child(4){ animation-delay:1.45s; }
+.phase.active .stagger > *:nth-child(5){ animation-delay:1.9s; } .phase.active .stagger > *:nth-child(6){ animation-delay:2.3s; }
+.src-grid{ display:flex; flex-wrap:wrap; gap:0.6rem; }
+.src-chip{ background:var(--paper-sunken); border:1px solid var(--line); border-radius:9px; padding:0.55rem 0.9rem; font-family:var(--font-mono); font-size:0.95rem; }
+.blank-line{ font-family:var(--font-display); font-size:clamp(1.7rem,3vw,2.5rem); }
+.blank-line .bl{ display:inline-block; min-width:4.5ch; border-bottom:4px solid var(--teal); color:var(--teal-deep); font-weight:600; text-align:center; }
+.tick{ color:var(--sage); font-weight:700; } .cross{ color:var(--rose); font-weight:700; }
+.dials{ display:flex; gap:1.2rem; align-items:center; margin:0.4rem 0; }
+.dial{ width:54px; height:54px; border-radius:50%; border:3px solid var(--teal); position:relative; background:var(--paper-raised); }
+.dial::after{ content:""; position:absolute; left:50%; top:6px; width:3px; height:20px; background:var(--teal-deep); border-radius:2px; transform-origin:50% 21px; transform:translateX(-50%) rotate(0deg); }
+.phase.active .dial::after{ animation:nudge 1.6s ease-in-out infinite; }
+.dial:nth-child(2)::after{ animation-delay:.25s; } .dial:nth-child(3)::after{ animation-delay:.5s; } .dial:nth-child(4)::after{ animation-delay:.75s; } .dial:nth-child(5)::after{ animation-delay:1s; }
+@keyframes nudge{ 0%,100%{ transform:translateX(-50%) rotate(-35deg);} 50%{ transform:translateX(-50%) rotate(40deg);} }
+.dial-note{ font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-faint); }
+.duo{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; width:100%; }
+@media(max-width:760px){ .duo{ grid-template-columns:1fr; } }
+.mini-card{ background:var(--paper-sunken); border:1px solid var(--line); border-left:4px solid var(--ink-faint); border-radius:11px; padding:0.8rem 1rem; font-size:1rem; line-height:1.45; color:var(--ink-soft); }
+.mini-card .mc-lbl{ display:block; font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:0.3rem; }
+.mini-card.good{ border-left-color:var(--teal); background:var(--teal-wash); color:var(--ink); }
+.mini-card.bad{ border-left-color:var(--rose); background:var(--rose-wash); color:var(--ink); }
+.mini-card.pick{ box-shadow:0 0 0 3px var(--teal-wash); border-left-color:var(--sage); }
+.thumb{ font-size:1.6rem; }
+.note-chip{ display:inline-block; font-family:var(--font-mono); font-size:0.78rem; background:var(--amber-wash); color:var(--amber); border:1px solid var(--amber); border-radius:99px; padding:0.15rem 0.7rem; }
+
+/* ---------- prompt-engineering loop ---------- */
+.loop{ display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin:1rem 0; }
+.loop .lp{ font-family:var(--font-mono); font-weight:600; font-size:1rem; border:2px solid var(--line); border-radius:10px; padding:0.7rem 1.1rem; background:var(--paper-raised); color:var(--ink-soft); animation:lpglow 6.4s infinite; }
+.loop .lp:nth-child(3){ animation-delay:1.6s; } .loop .lp:nth-child(5){ animation-delay:3.2s; } .loop .lp:nth-child(7){ animation-delay:4.8s; }
+.loop .la{ color:var(--ink-faint); font-family:var(--font-mono); font-size:1.3rem; }
+@keyframes lpglow{ 0%,22%{ border-color:var(--teal); background:var(--teal-wash); color:var(--teal-deep);} 26%,100%{ border-color:var(--line); background:var(--paper-raised); color:var(--ink-soft);} }
+.loop-back{ font-family:var(--font-mono); font-size:0.85rem; color:var(--ink-faint); }
+
+/* ---------- RTCCF pillars (5) ---------- */
+.pillars5{ display:grid; grid-template-columns:repeat(5,1fr); gap:0.8rem; margin:1.2rem 0; }
+@media(max-width:1000px){ .pillars5{ grid-template-columns:repeat(2,1fr); } }
+.pillars5 .pillar{ text-align:left; padding:1.05rem 1.1rem; }
+.pillars5 .pillar:nth-child(5){ border-top-color:#5c6570; }
+.pillars5 .pillar h4{ font-size:1.12rem; }
+.pillars5 .pillar .q{ font-style:italic; color:var(--ink); font-size:0.95rem; margin-top:0.4rem; line-height:1.4; }
+
+/* ---------- element slides ---------- */
+.out.pre{ white-space:pre-line; }
+.try-box{ background:var(--teal-wash); border:1px solid var(--teal); border-radius:12px; padding:0.9rem 1.2rem; margin-top:1rem; }
+.try-box .tb-h{ font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--teal-deep); font-weight:700; margin-bottom:0.4rem; display:block; }
+.try-box p{ margin:0.25rem 0; font-size:1.02rem; color:var(--ink); line-height:1.45; }
+.try-box .prompt-block{ margin:0.5rem 0; background:var(--paper-raised); }
+.why-line{ font-size:1.05rem; color:var(--ink-soft); margin:0.8rem 0 0; }
+.why-line b{ color:var(--ink); }
+
+/* ---------- steering widget ---------- */
+.steer{ display:grid; grid-template-columns:1fr 1.15fr; gap:1.4rem; margin-top:1rem; align-items:start; }
+@media(max-width:900px){ .steer{ grid-template-columns:1fr; } }
+.steer-btns{ display:grid; gap:0.5rem; margin-bottom:0.9rem; }
+.steer-btn{ text-align:left; font-family:var(--font-body); font-size:0.98rem; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; padding:0.65rem 0.9rem; cursor:pointer; color:var(--ink); line-height:1.35; }
+.steer-btn small{ display:block; font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:0.15rem; }
+.steer-btn:hover{ border-color:var(--teal); }
+.steer-btn.on{ border-color:var(--teal); background:var(--teal-wash); box-shadow:0 0 0 2px var(--teal-wash); }
+.steer-out{ background:var(--paper-sunken); border-radius:10px; padding:0.8rem 1rem; font-size:1.02rem; line-height:1.5; color:var(--ink); margin-top:0.9rem; }
+.steer-out small{ display:block; font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:0.25rem; }
+
+/* ---------- jobs grid ---------- */
+.jobs{ display:grid; grid-template-columns:repeat(4,1fr); gap:0.8rem; margin:1rem 0; }
+@media(max-width:1000px){ .jobs{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:560px){ .jobs{ grid-template-columns:1fr; } }
+.job{ background:var(--paper-raised); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:11px; padding:0.8rem 0.95rem; }
+.job:nth-child(4n+2){ border-top-color:var(--amber); } .job:nth-child(4n+3){ border-top-color:var(--sage); } .job:nth-child(4n+4){ border-top-color:var(--rose); }
+.job h4{ margin:0 0 0.3rem; font-family:var(--font-mono); font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--teal-deep); }
+.job p{ margin:0; font-size:0.95rem; line-height:1.4; color:var(--ink-soft); font-style:italic; }
+
+/* ---------- prompt ladder ---------- */
+.ladder-steps{ display:flex; gap:0.4rem; flex-wrap:wrap; margin:0.8rem 0; }
+.lad-btn{ font-family:var(--font-mono); font-size:0.88rem; font-weight:600; border:1px solid var(--line); background:var(--paper-raised); border-radius:9px; padding:0.55rem 0.95rem; cursor:pointer; color:var(--ink-soft); }
+.lad-btn:hover{ border-color:var(--teal); }
+.lad-btn.on{ background:var(--teal); border-color:var(--teal); color:#fff; }
+.lad-btn.done{ border-color:var(--teal); color:var(--teal-deep); }
+.ladder{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media(max-width:900px){ .ladder{ grid-template-columns:1fr; } }
+.lad-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:13px; padding:1rem 1.2rem; min-height:260px; }
+.lad-card .lc-h{ font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:0.5rem; display:block; }
+.lad-prompt{ font-family:var(--font-mono); font-size:0.84rem; line-height:1.55; color:var(--ink-soft); white-space:pre-wrap; margin:0; }
+.lad-prompt .new{ background:var(--amber-wash); color:var(--ink); border-radius:4px; padding:0 0.15rem; }
+.lad-out{ font-size:1.02rem; line-height:1.5; color:var(--ink); white-space:pre-line; margin:0; }
+.meter{ height:10px; background:var(--paper-sunken); border-radius:99px; overflow:hidden; margin:0.5rem 0 0.2rem; }
+.meter > div{ height:100%; background:var(--teal); border-radius:99px; transition:width .4s ease; }
+.lad-note{ font-size:0.98rem; color:var(--ink-soft); margin:0.7rem 0 0; }
+.lad-note b{ color:var(--ink); }
+
+/* ---------- builder ---------- */
+.builder{ display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-top:0.8rem; align-items:start; }
+@media(max-width:900px){ .builder{ grid-template-columns:1fr; } }
+.bfld{ display:grid; grid-template-columns:96px 1fr; gap:0.6rem; margin:0.4rem 0; align-items:start; }
+.bfld label{ font-family:var(--font-mono); font-size:0.8rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding-top:0.55rem; }
+.bfld:nth-child(1) label{ color:#b5651d; } .bfld:nth-child(2) label{ color:#5c6570; } .bfld:nth-child(3) label{ color:var(--amber); }
+.bfld:nth-child(4) label{ color:var(--teal-deep); } .bfld:nth-child(5) label{ color:var(--sage); }
+.bfld textarea{ font-family:var(--font-body); font-size:0.95rem; line-height:1.4; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:0.5rem 0.65rem; width:100%; min-height:52px; resize:vertical; }
+.bfld textarea:focus{ outline:2px solid var(--teal); outline-offset:1px; }
+.b-preview{ background:var(--paper-sunken); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem; font-family:var(--font-mono); font-size:0.84rem; line-height:1.55; color:var(--ink); white-space:pre-wrap; min-height:230px; margin:0; }
+.b-preview.empty{ color:var(--ink-faint); }
+.check-list{ list-style:none; margin:0.6rem 0 0; padding:0; display:grid; gap:0.35rem; }
+.check-list li{ position:relative; padding-left:1.6rem; font-size:0.98rem; color:var(--ink-soft); line-height:1.4; }
+.check-list li::before{ content:""; position:absolute; left:0; top:0.28em; width:12px; height:12px; border:2.5px solid var(--teal); border-radius:3px; }
+
+/* ---------- quiz ---------- */
+.quiz{ display:grid; gap:0.7rem; margin-top:0.9rem; }
+.q-row{ display:grid; grid-template-columns:1.5fr auto; gap:0.8rem; align-items:center; background:var(--paper-raised); border:1px solid var(--line); border-radius:12px; padding:0.7rem 1rem; }
+.q-row .qt{ font-size:1.08rem; color:var(--ink); line-height:1.4; }
+.q-opts{ display:flex; gap:0.4rem; flex-wrap:wrap; }
+.q-opt{ font-family:var(--font-mono); font-size:0.82rem; font-weight:600; border:1px solid var(--line); background:var(--paper); border-radius:8px; padding:0.45rem 0.8rem; cursor:pointer; color:var(--ink-soft); }
+.q-opt:hover{ border-color:var(--teal); }
+.q-opt.right{ background:var(--sage); border-color:var(--sage); color:#fff; }
+.q-opt.wrong{ background:var(--rose-wash); border-color:var(--rose); color:var(--rose); }
+.q-row .why{ grid-column:1 / -1; font-size:0.92rem; color:var(--ink-soft); display:none; }
+.q-row.answered .why{ display:block; }
+.q-score{ font-family:var(--font-mono); font-size:0.9rem; color:var(--ink-faint); margin-top:0.7rem; }
+
+/* ---------- RAG ---------- */
+.doc-lines{ display:grid; gap:0.4rem; max-width:360px; }
+.doc-lines span{ display:block; height:10px; border-radius:5px; background:var(--line); }
+.chunk-row{ display:flex; gap:0.5rem; flex-wrap:wrap; }
+.chunk{ background:var(--paper-sunken); border:1px solid var(--line); border-radius:8px; padding:0.45rem 0.7rem; font-size:0.88rem; color:var(--ink-soft); }
+.chunk.hit{ border-color:var(--teal); background:var(--teal-wash); color:var(--teal-deep); font-weight:600; }
+.chunk small{ display:block; font-family:var(--font-mono); font-size:0.66rem; color:var(--ink-faint); }
+.flow-arrow{ font-family:var(--font-mono); color:var(--ink-faint); font-size:1.2rem; }
+.big-q{ font-family:var(--font-display); font-size:1.5rem; }
+.vs-table td:first-child{ width:34%; }
+
+/* ---------- supervised fine-tuning slide ---------- */
+.flow{ display:flex; gap:0.4rem; flex-wrap:wrap; align-items:stretch; margin:0.7rem 0 0.9rem; }
+.flow .fs{ flex:1; min-width:170px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; padding:0.55rem 0.8rem; font-size:0.9rem; line-height:1.35; color:var(--ink-soft); }
+.flow .fs b{ display:block; color:var(--ink); font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:0.15rem; }
+.flow .fa{ align-self:center; color:var(--ink-faint); font-family:var(--font-mono); }
+.sft{ display:grid; grid-template-columns:1fr 1.15fr; gap:1.2rem; align-items:start; }
+@media(max-width:900px){ .sft{ grid-template-columns:1fr; } }
+.ex-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:13px; padding:0.8rem 1rem; }
+.ex-field{ margin:0.4rem 0; padding:0.5rem 0.75rem; border-radius:9px; font-size:0.95rem; line-height:1.4; color:var(--ink); }
+.ex-field small{ display:block; font-family:var(--font-mono); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.09em; margin-bottom:0.12rem; font-weight:700; }
+.ex-instr{ background:var(--amber-wash); } .ex-instr small{ color:var(--amber); }
+.ex-input{ background:var(--paper-sunken); } .ex-input small{ color:var(--ink-faint); }
+.ex-out{ background:var(--teal-wash); } .ex-out small{ color:var(--teal-deep); }
+.sft-note{ margin:0.55rem 0 0; font-size:0.92rem; line-height:1.45; color:var(--ink-soft); }
+.sft-note b, .sft-note code{ color:var(--ink); }
+.sft-note code{ font-family:var(--font-mono); font-size:0.85em; background:var(--paper-sunken); padding:0.05rem 0.3rem; border-radius:4px; }
+.tabs{ display:flex; gap:0.4rem; margin:0.2rem 0 0.5rem; }
+.tab-btn{ font-family:var(--font-mono); font-size:0.8rem; font-weight:600; border:1px solid var(--line); background:var(--paper-raised); border-radius:8px; padding:0.45rem 0.85rem; cursor:pointer; color:var(--ink-soft); }
+.tab-btn:hover{ border-color:var(--teal); }
+.tab-btn.on{ background:var(--teal); border-color:var(--teal); color:#fff; }
+.tab-panel{ display:none; } .tab-panel.on{ display:block; }
+pre.code{ background:var(--paper-sunken); border:1px solid var(--line); border-radius:10px; padding:0.7rem 0.9rem; font-family:var(--font-mono); font-size:0.78rem; line-height:1.5; color:var(--ink); white-space:pre-wrap; margin:0; }
+pre.code .ins{ background:var(--amber-wash); border-radius:3px; padding:0 0.15rem; color:var(--amber); font-weight:600; }
+pre.code .tgt{ background:var(--teal-wash); border-bottom:2px solid var(--teal); color:var(--teal-deep); }
+.sft-note .tgt{ background:var(--teal-wash); border-bottom:2px solid var(--teal); color:var(--teal-deep); padding:0 0.15rem; }
+
+/* ---------- Javed Akhtar running example ---------- */
+.hl{ background:var(--amber-wash); color:inherit; border-radius:3px; padding:0 0.12rem; }
+.out.poem{ font-style:normal; font-family:var(--font-display); font-size:1.08rem; line-height:1.6; }
+.ai-note{ margin:0.5rem 0 0; font-size:0.85rem; color:var(--ink-faint); font-style:italic; }
+.mini-table{ min-width:0 !important; width:100%; border-collapse:collapse; font-size:0.8rem; margin-top:0.2rem; }
+.mini-table th, .mini-table td{ padding:0.35rem 0.5rem; border-bottom:1px solid var(--line); text-align:left; color:var(--ink-soft); }
+.mini-table th{ font-family:var(--font-mono); font-size:0.64rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); background:transparent; }
+
+/* ---------- compact variant for dense example slides ---------- */
+.slide.tight h1.headline{ font-size:clamp(1.8rem,3.2vw,2.6rem); margin-bottom:0.5rem; }
+.slide.tight .kicker{ margin-bottom:0.5rem; }
+.slide.tight .lede{ font-size:1.05rem !important; margin-bottom:0.5rem !important; }
+.slide.tight .compare-card{ padding:0.8rem 1.1rem; }
+.slide.tight .compare-card p{ font-size:0.95rem; margin:0.25rem 0; line-height:1.42; }
+.slide.tight .out.poem{ font-size:1rem; line-height:1.5; }
+.slide.tight .why-line{ font-size:0.95rem; margin:0.5rem 0 0; }
+.slide.tight .try-box{ padding:0.6rem 1rem; margin-top:0.6rem; }
+.slide.tight .try-box p{ font-size:0.95rem; }
+.slide.tight .prompt-block{ padding:0.6rem 0.9rem; }
+.slide.tight .prompt-text{ font-size:0.78rem; line-height:1.45; }
+.slide.tight .mini-card{ font-size:0.92rem; padding:0.55rem 0.8rem; }
+.slide.tight .example-box{ padding:0.7rem 1.1rem; margin:0.6rem 0; }
+.slide.tight .example-box p{ font-size:1rem; }
+
+.b-status{ margin:0.5rem 0 0; font-size:0.92rem; color:var(--teal-deep); font-weight:600; min-height:1.3em; }
+</style>
+
+<div id="deck">
+  <section class="slide active" data-part="Orientation" data-title="Where you've been">
+    <div class="slide-inner">
+      <span class="kicker">The journey so far</span>
+      <h1 class="headline">Where You've Been</h1>
+      <p class="lede">Two milestones sit behind you. Today opens the third.</p>
+      <div class="milestones three reveal-grid">
+        <div class="ms-card"><span class="ms-num">01</span><h4>AI Masterclass Series</h4><p>with Dr. Shailesh Kumar &mdash; building the foundation for what AI is and where it fits in a business.</p></div>
+        <div class="ms-card"><span class="ms-num">02 &middot; SESSION 1</span><h4>Generative AI and Evolution of LLMs</h4><p>How LLMs work, how to choose a model and platform, and what tokens cost.</p></div>
+        <div class="ms-card here"><span class="ms-num">03 &middot; YOU ARE AT</span><h4>Prompt Engineering for Problem Solving</h4><p>Session 2 of 6 in <b>Leading with AI</b> &mdash; Sun 25 October.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Orientation" data-title="6-session roadmap">
+    <div class="slide-inner">
+      <span class="kicker">The full series &middot; Leading with AI</span>
+      <h1 class="headline">Six Sessions, One Arc</h1>
+      <div class="phase-strip">
+        <div class="ph p1"><b>Understand</b><small>Concepts</small></div>
+        <div class="ph p2"><b>Instruct</b><small>Skills &mdash; from basics to pro-level prompting</small></div>
+        <div class="ph p3"><b>Trust</b><small>Safeguards</small></div>
+        <div class="ph p4"><b>Build</b><small>Agents</small></div>
+        <div class="ph p5"><b>Automate</b><small>Workflows</small></div>
+      </div>
+      <div class="rm6 reveal-grid">
+        <div class="rm-card"><span class="rm-tag done">Done</span><span class="rm-num">Session 1</span><span class="rm-date">Sat 24 Oct</span><h4>Generative AI and Evolution of LLMs</h4><span class="rm-out">Know how LLMs work &mdash; and pick the right model, platform and budget.</span></div>
+        <div class="rm-card now"><span class="rm-tag">Today</span><span class="rm-num">Session 2</span><span class="rm-date">Sun 25 Oct</span><h4>Prompt Engineering for Problem Solving</h4><span class="rm-out">Turn vague asks into prompts that solve real work problems.</span></div>
+        <div class="rm-card"><span class="rm-num">Session 3</span><span class="rm-date">Sat 31 Oct</span><h4>Advanced AI, Prompting Like a Pro</h4><span class="rm-out">Go deeper: structure, chain and check prompts like a professional.</span></div>
+        <div class="rm-card"><span class="rm-num">Session 4</span><span class="rm-date">Sun 15 Nov</span><h4>Responsible AI for Business</h4><span class="rm-out">Use AI safely: privacy, bias, governance and risk.</span></div>
+        <div class="rm-card"><span class="rm-num">Session 5</span><span class="rm-date">Sat 21 Nov</span><h4>Build Your AI Teammate: Creating Your First AI Agent</h4><span class="rm-out">Stand up an agent that works alongside you.</span></div>
+        <div class="rm-card"><span class="rm-num">Session 6</span><span class="rm-date">Sun 22 Nov</span><h4>Automate with AI: From Workflows to Intelligent Automation</h4><span class="rm-out">Wire AI into workflows that run on their own.</span></div>
+      </div>
+      <p class="lede" style="font-size:1.12rem; margin-bottom:0;">Session 1 showed you the engine. Today you learn to drive it.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Orientation" data-title="Today's agenda">
+    <div class="slide-inner">
+      <span class="kicker">Session 2 &middot; Today</span>
+      <h1 class="headline">Prompt Engineering for Problem Solving</h1>
+      <div class="runbar" role="img" aria-label="Two-hour run of show">
+        <div class="rb s0" style="flex:5"><span>&nbsp;</span></div>
+        <div class="rb s1" style="flex:10"><span>Prompts</span><em>10&prime;</em></div>
+        <div class="rb s2" style="flex:10"><span>Why</span><em>10&prime;</em></div>
+        <div class="rb s3" style="flex:10"><span>Jobs</span><em>10&prime;</em></div>
+        <div class="rb s4" style="flex:54"><span>Role &middot; Task &middot; Context &middot; Constraint &middot; Format</span><em>54&prime;</em></div>
+        <div class="rb s5" style="flex:13"><span>RAG</span><em>13&prime;</em></div>
+        <div class="rb s7" style="flex:3"><span>&nbsp;</span></div>
+        <div class="rb s6" style="flex:15"><span>Q&amp;A</span><em>15&prime;</em></div>
+      </div>
+      <div class="ag-grid reveal-grid">
+        <div class="ag-card c1"><span class="ag-time">0:05 &ndash; 0:15</span><h4>Prompts, from the ground up</h4><ul>
+          <li><span class="n">01</span><span><b>What is a prompt?</b></span></li>
+          <li><span class="n">02</span><span><b>Why is it called prompt engineering?</b> <span class="tag game">try it: vague vs sharp</span></span></li></ul></div>
+        <div class="ag-card c2"><span class="ag-time">0:15 &ndash; 0:25</span><h4>Why prompts work</h4><ul>
+          <li><span class="n">03</span><span><b>How supervised fine-tuning</b> teaches a model to follow instructions <span class="tag demo">Alpaca &amp; chat formats</span></span></li></ul></div>
+        <div class="ag-card c3"><span class="ag-time">0:25 &ndash; 0:35</span><h4>One model, many jobs</h4><ul>
+          <li><span class="n">04</span><span><b>Many use cases, only by prompting</b></span></li>
+          <li><span class="n">05</span><span><b>One email, five jobs</b> <span class="tag game">try it</span></span></li></ul></div>
+        <div class="ag-card c4"><span class="ag-time">0:35 &ndash; 1:29</span><h4>Role &middot; Task &middot; Context &middot; Constraint &middot; Format</h4><ul>
+          <li><span class="n">06</span><span><b>Each element, twice:</b> a lyricist writing a Bollywood song, then a business example <span class="tag game">try each one</span></span></li>
+          <li><span class="n">07</span><span><b>The prompt ladder</b> <span class="tag tool">interactive</span></span></li>
+          <li><span class="n">08</span><span><b>Write your own prompt</b> <span class="tag game">capstone</span></span></li></ul></div>
+        <div class="ag-card c5"><span class="ag-time">1:29 &ndash; 1:42</span><h4>RAG</h4><ul>
+          <li><span class="n">09</span><span><b>Closed-book vs open-book</b></span></li>
+          <li><span class="n">10</span><span><b>How RAG works</b> <span class="tag demo">animation</span></span></li>
+          <li><span class="n">11</span><span><b>Try RAG on your own document</b> <span class="tag game">try it</span></span></li></ul></div>
+        <div class="ag-card c6"><span class="ag-time">1:42 &ndash; 2:00</span><h4>Wrap-up &amp; Q&amp;A</h4><ul>
+          <li><span class="n">12</span><span><b>Cheat sheet</b>, homework and what&rsquo;s next</span></li>
+          <li><span class="n">&nbsp;</span><span>Open floor for questions.</span></li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="What Is a Prompt" data-title="What is a prompt">
+    <div class="slide-inner">
+      <span class="kicker">Part 1 &middot; Prompts, from the ground up</span>
+      <h1 class="headline">What Is a Prompt?</h1>
+      <div class="story-quote">Think of the model as a brilliant new hire on day one &mdash; and your prompt as the brief you hand them.</div>
+      <p class="lede" style="margin-bottom:0.4rem;">A prompt is the input you give an AI system to get a response. It can be a question, a command, or context plus instructions &mdash; even a few examples.</p>
+      <div class="domain-grid reveal-grid">
+        <div class="domain-card"><span class="dlabel">Question</span><p>&ldquo;What is the capital of France?&rdquo;</p></div>
+        <div class="domain-card"><span class="dlabel">Command</span><p>&ldquo;Write a summary of the attached text.&rdquo;</p></div>
+        <div class="domain-card"><span class="dlabel">Context + instruction</span><p>&ldquo;Based on the following sales data, explain the trends in three bullet points.&rdquo;</p></div>
+        <div class="domain-card"><span class="dlabel">Instruction + examples</span><p>&ldquo;Label each review. &lsquo;Loved it&rsquo; &rarr; Positive. &lsquo;Too slow&rsquo; &rarr; Negative. &lsquo;Fast delivery&rsquo; &rarr; ?&rdquo;</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="What Is a Prompt" data-title="Why prompt engineering">
+    <div class="slide-inner">
+      <span class="kicker">The name, explained</span>
+      <h1 class="headline">Why It&rsquo;s Called Prompt <i>Engineering</i></h1>
+      <p class="lede" style="margin-bottom:0.6rem;">Because a prompt that reliably works is <b>designed and tested</b>, not typed once and hoped for &mdash; the same discipline as engineering anything else.</p>
+      <div class="loop"><span class="lp">Write</span><span class="la">&rarr;</span><span class="lp">Run</span><span class="la">&rarr;</span><span class="lp">Inspect</span><span class="la">&rarr;</span><span class="lp">Refine</span><span class="la">&#8634;</span></div>
+      <div class="pillars reveal-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="pillar"><span class="pnum">01</span><h4>Clear requirements</h4><p>You say exactly what you need, and for whom.</p></div>
+        <div class="pillar"><span class="pnum">02</span><h4>Defined constraints</h4><p>You set the limits: length, tone, rules, sources.</p></div>
+        <div class="pillar"><span class="pnum">03</span><h4>A specified output</h4><p>You decide the shape of the answer before it&rsquo;s written.</p></div>
+      </div>
+      <div class="example-box"><span class="lbl">Why it matters</span><p>Same model, same cost &mdash; wildly different quality, purely from how the instruction is written. No retraining, no data team: just better words, today.</p></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="What Is a Prompt" data-title="Try: vague vs sharp">
+    <div class="slide-inner">
+      <span class="kicker">Try it &middot; 3 minutes</span>
+      <h1 class="headline">Vague vs Sharp</h1>
+      <p class="lede" style="margin-bottom:0.6rem;">Open ChatGPT, Claude or Gemini. Run each prompt in a <b>new chat</b>, and compare the two answers.</p>
+      <div class="two-col">
+        <div class="compare-card"><span class="clbl">Prompt A &mdash; vague</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Write a message about the meeting.</pre></div></div>
+        <div class="compare-card strong"><span class="clbl">Prompt B &mdash; sharper</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Write a 4-line WhatsApp message to my team of 8. Remind them that Thursday's 3 pm review has moved to Friday 11 am, room B. Friendly but professional. End by asking everyone to confirm attendance.</pre></div></div>
+      </div>
+      <div class="example-box"><span class="lbl">What to notice</span><p>Which one could you send without editing? Look at what changed between A and B: <b>audience &middot; details &middot; length &middot; tone &middot; the ask</b>. That gap is what prompt engineering closes.</p></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="Why Prompts Work" data-title="How fine-tuning teaches instructions">
+    <div class="slide-inner">
+      <span class="kicker">Part 2 &middot; Why prompts work</span>
+      <h1 class="headline" style="font-size:clamp(1.9rem,3.6vw,2.9rem);">How Supervised Fine-Tuning Teaches a Model to Follow Instructions</h1>
+      <div class="flow">
+        <div class="fs"><b>1 &middot; Start</b>A base model that only <i>completes</i> text</div><span class="fa">&rarr;</span>
+        <div class="fs"><b>2 &middot; Show examples</b>Thousands of instruction &rarr; ideal response pairs, written by people</div><span class="fa">&rarr;</span>
+        <div class="fs"><b>3 &middot; Train</b>It learns to write the response that follows each instruction</div><span class="fa">&rarr;</span>
+        <div class="fs"><b>4 &middot; Result</b>An assistant that follows instructions</div>
+      </div>
+      <div class="sft">
+        <div>
+          <span class="uc-label">One training example</span>
+          <div class="ex-card">
+            <div class="ex-field ex-instr"><small>Instruction &mdash; what to do</small>Summarise the email below in one line.</div>
+            <div class="ex-field ex-input"><small>Input &mdash; the material</small>&ldquo;Hi team, my desk was promised by 10 Oct, then 15 Oct, and still hasn&rsquo;t arrived. I want a refund if it isn&rsquo;t here by Saturday.&rdquo;</div>
+            <div class="ex-field ex-out"><small>Output &mdash; the ideal response</small>Rohan will ask for a full refund if his desk doesn&rsquo;t arrive by Saturday.</div>
+            <p class="sft-note">The model is trained to <b>predict the output</b>, word by word, given the instruction and input. After tens of thousands of examples, it learns the pattern: <b>instruction in &rarr; matching answer out</b>.</p>
+          </div>
+        </div>
+        <div class="tabs-host">
+          <span class="uc-label">The same example, written two ways for training</span>
+          <div class="tabs"><button type="button" class="tab-btn on" data-tab="alpaca">Alpaca style</button><button type="button" class="tab-btn" data-tab="chat">Chat style (ChatML)</button></div>
+          <div class="tab-panel on" data-panel="alpaca">
+            <pre class="code">Below is an instruction that describes a task,
+paired with an input that provides more context.
+Write a response that completes the request.
+
+<span class="ins">### Instruction:</span>
+Summarise the email below in one line.
+
+<span class="ins">### Input:</span>
+Hi team, my desk was promised by 10 Oct&hellip;
+
+<span class="ins">### Response:</span>
+<span class="tgt">Rohan will ask for a full refund if his desk
+doesn&rsquo;t arrive by Saturday.</span></pre>
+            <p class="sft-note">Used by <b>Stanford Alpaca</b> (2023): about 52,000 instruction examples turned a plain LLaMA 7B base model into an instruction follower. Records are stored as <code>instruction</code>, <code>input</code>, <code>output</code>.</p>
+          </div>
+          <div class="tab-panel" data-panel="chat">
+            <pre class="code"><span class="ins">&lt;|im_start|&gt;system</span>
+You are a helpful assistant.&lt;|im_end|&gt;
+<span class="ins">&lt;|im_start|&gt;user</span>
+Summarise the email below in one line.
+Hi team, my desk was promised by 10 Oct&hellip;&lt;|im_end|&gt;
+<span class="ins">&lt;|im_start|&gt;assistant</span>
+<span class="tgt">Rohan will ask for a full refund if his desk
+doesn&rsquo;t arrive by Saturday.</span>&lt;|im_end|&gt;</pre>
+            <p class="sft-note">Used by many chat models: each message carries a <b>role</b> (system, user, assistant). The model is trained on the <span class="tgt">highlighted assistant part</span> &mdash; and this is the same shape your prompts take today.</p>
+          </div>
+        </div>
+      </div>
+      <div class="example-box" style="margin-top:0.9rem;"><span class="lbl">Why this matters for you</span><p>The model was trained on text shaped like <b>instruction &rarr; response</b>, so a clear instruction matches exactly what it was rewarded for. The more your prompt looks like a good instruction, the better it aligns. (A later stage, learning from human feedback, then tunes tone, safety and fairness.)</p></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="One Model, Many Jobs" data-title="One model, many jobs">
+    <div class="slide-inner">
+      <span class="kicker">Part 3 &middot; No retraining. No code.</span>
+      <h1 class="headline">One Model, Many Jobs &mdash; Only by Prompting</h1>
+      <div class="jobs reveal-grid">
+        <div class="job"><h4>Summarise</h4><p>&ldquo;Summarise this report in 5 bullets for the CEO.&rdquo;</p></div>
+        <div class="job"><h4>Classify</h4><p>&ldquo;Label each ticket: billing, delivery or product. Add urgency.&rdquo;</p></div>
+        <div class="job"><h4>Extract</h4><p>&ldquo;Pull names, dates and amounts from this contract into a table.&rdquo;</p></div>
+        <div class="job"><h4>Translate</h4><p>&ldquo;Translate this notice into Hindi, keeping a formal tone.&rdquo;</p></div>
+        <div class="job"><h4>Draft</h4><p>&ldquo;Write a polite reply declining this vendor proposal.&rdquo;</p></div>
+        <div class="job"><h4>Analyse</h4><p>&ldquo;Here is our monthly sales data. What are the three biggest trends?&rdquo;</p></div>
+        <div class="job"><h4>Code</h4><p>&ldquo;Write an Excel formula that flags invoices older than 30 days.&rdquo;</p></div>
+        <div class="job"><h4>Brainstorm</h4><p>&ldquo;Give me 10 ideas to improve onboarding for new joiners.&rdquo;</p></div>
+      </div>
+      <div class="two-col">
+        <div class="example-box" style="margin:0;"><span class="lbl">Why one model can do all of this</span><p>Stage 1 gave it broad knowledge; Stage 2 taught it to follow <i>any</i> request. The prompt decides which job it does.</p></div>
+        <div class="example-box" style="margin:0;"><span class="lbl">Teach it inside the prompt (few-shot)</span><p>Show 2&ndash;3 examples, then the new case: <i>&ldquo;Great app&rdquo; &rarr; Positive. &ldquo;Keeps crashing&rdquo; &rarr; Negative. &ldquo;Does the job&rdquo; &rarr; ?</i> It picks up the pattern on the spot.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="One Model, Many Jobs" data-title="Try: one email, five jobs">
+    <div class="slide-inner">
+      <span class="kicker">Try it &middot; 8 minutes</span>
+      <h1 class="headline">One Email, Five Jobs</h1>
+      <p class="lede" style="margin-bottom:0.5rem;">Paste the email into your AI tool once. Then send the five prompts below, one at a time, in the <b>same chat</b>.</p>
+      <div class="two-col" style="align-items:start;">
+        <div><span class="uc-label">The email (copy this first)</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Subject: Order #48213 - third delay, very disappointed
+
+Hi team, I ordered a standing desk on 2 October for my home office. It was promised by 10 October, then 15 October, and it still has not arrived. Nobody has replied to my two emails. I run a small design studio and I have a client visiting on Monday. If it doesn't arrive by Saturday I want a full refund and I will leave a review about this experience.
+
+Rohan Mehta, Pune</pre></div></div>
+        <div><span class="uc-label">Then, one after another</span>
+          <ol class="steps" style="gap:0.45rem;">
+            <li><b>Summarise</b> &mdash; <div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Summarise the email above in two sentences.</pre></div></li>
+            <li><b>Classify</b> &mdash; <div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Classify the email by category (delivery, billing, product, other) and urgency (low, medium, high). One line.</pre></div></li>
+            <li><b>Extract</b> &mdash; <div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Extract: customer name, city, order number, product, dates mentioned, and what the customer wants. Show as a table.</pre></div></li>
+            <li><b>Draft</b> &mdash; <div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Write a polite, empathetic reply in under 100 words. Apologise once and give a clear next step.</pre></div></li>
+            <li><b>Translate</b> &mdash; <div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Translate your reply into Hindi, keeping the tone warm and professional.</pre></div></li>
+          </ol></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="RTCCF overview">
+    <div class="slide-inner">
+      <span class="kicker">Part 4 &middot; Role &middot; Task &middot; Context &middot; Constraint &middot; Format</span>
+      <h1 class="headline">The Anatomy of a Good Prompt</h1>
+      <div class="story-quote">You wouldn&rsquo;t hand a new hire a one-line sticky note. You&rsquo;d brief them. A good brief has five parts.</div>
+      <div class="rtccf-chain show">
+        <span class="rtccf-block">Role</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block">Task</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block">Context</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block">Constraint</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block">Format</span>
+      </div>
+      <div class="pillars5 reveal-grid">
+        <div class="pillar"><span class="pnum">R</span><h4>Role</h4><p>Who should it be?</p><div class="q">&ldquo;Imagine you are Javed Akhtar&hellip;&rdquo;</div></div>
+        <div class="pillar"><span class="pnum">T</span><h4>Task</h4><p>What exactly is the job?</p><div class="q">&ldquo;Write the mukhda of a romantic song&hellip;&rdquo;</div></div>
+        <div class="pillar"><span class="pnum">C</span><h4>Context</h4><p>What background does it need?</p><div class="q">&ldquo;A 1980s Lucknow love story; a rainy farewell&hellip;&rdquo;</div></div>
+        <div class="pillar"><span class="pnum">C</span><h4>Constraint</h4><p>What rules and limits apply?</p><div class="q">&ldquo;4 lines, AABB, Hindi only.&rdquo;</div></div>
+        <div class="pillar"><span class="pnum">F</span><h4>Format</h4><p>What should the output look like?</p><div class="q">&ldquo;Devanagari, Roman and English meaning.&rdquo;</div></div>
+      </div>
+      <p class="lede" style="font-size:1.1rem; margin-bottom:0;">One running example &mdash; <b>a lyricist writing a song for a new Bollywood film</b> &mdash; plus a business example for each element. Miss one part, and the AI fills the gap with its own generic assumption.</p>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Role: Javed Akhtar">
+    <div class="slide-inner">
+      <span class="kicker">R &middot; Role &middot; 1 of 2</span>
+      <h1 class="headline">Role &mdash; Giving the AI an Identity</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">A role tells the model whose expertise, vocabulary and point of view to use. Nowhere is it easier to see than in poetry.</p>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Without a role</span><p><b>Prompt:</b> &ldquo;Write a song about the separation of two lovers.&rdquo;</p><p class="out pre poem">तुम बिन अकेला हूँ मैं,
+आँसू बहाता हूँ मैं,
+लौट आओ तुम, लौट आओ,
+दिल ये पुकारे बार-बार&hellip;</p></div><div class="compare-card strong"><span class="clbl">With a role</span><p><b>Prompt:</b> &ldquo;<mark class='hl'>Imagine you are Javed Akhtar, the legendary poet and lyricist known for profound, poetic songwriting.</mark> Write a song on the separation of two lovers, using poetic imagery and deep metaphors.&rdquo;</p><p class="out pre poem">शाम ढली तो परछाइयाँ लंबी हो गईं,
+कुछ बातें थीं जो होंठों तक आकर खो गईं।
+आख़िरी मोड़ पर रुककर तुमने जो देखा,
+वक़्त ने उस पल को तस्वीर बना दिया&hellip;</p></div></div>
+      <p class="ai-note">AI-generated samples for illustration, in the style of the role &mdash; not written by the person named.</p>
+      <p class="why-line"><b>Why it works:</b> during training the model read how many kinds of writers write. A role doesn&rsquo;t add facts &mdash; it picks <b>which voice</b> to use: imagery, restraint, metaphor.</p>
+
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Role: write like you">
+    <div class="slide-inner">
+      <span class="kicker">R &middot; Role &middot; 2 of 2</span>
+      <h1 class="headline">Role &mdash; Make It Write Like You</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">A role can also be <i>you</i>. Describe your job, tone and style, and the model writes emails that sound like you, not like a template.</p>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Without a role</span><p><b>Prompt:</b> &ldquo;Write an email telling my client Priya that the Q3 report will be two days late.&rdquo;</p><p class="out pre">Subject: Delay in Q3 Report
+
+Dear Priya,
+I hope this email finds you well. I am writing to inform you that, due to unforeseen circumstances, the Q3 report will be delayed by two days. We apologise for any inconvenience and appreciate your understanding.
+Best regards</p></div><div class="compare-card strong"><span class="clbl">With a role, tone and style</span><p><b>Prompt:</b> &ldquo;<mark class='hl'>You are Meera Rao, Head of Operations at a logistics company. Voice: warm but direct; short sentences; plain English; one light touch of humour; no corporate buzzwords. Sign off &lsquo;Warm regards, Meera&rsquo;.</mark> Write an email telling my client Priya that the Q3 report will be two days late.&rdquo;</p><p class="out pre">Subject: Q3 report &mdash; new date is Friday
+
+Hi Priya,
+Quick heads-up: the Q3 report will reach you on Friday, not Wednesday. I&rsquo;d rather give you a real date than a hopeful one.
+I&rsquo;ll send the draft numbers tonight so you can plan around them.
+Thanks for your patience.
+
+Warm regards,
+Meera</p></div></div>
+      <p class="why-line"><b>The levers inside a role:</b> job title &middot; tone &middot; style &middot; formality &middot; sign-off &middot; phrases to avoid. Even better: paste two of your own emails and say &ldquo;match this voice.&rdquo;</p>
+      <div class="try-box"><span class="tb-h">Try it &middot; 4 minutes</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">You are [your name], [your job] at [your company].
+Voice: [warm / formal / crisp]. Style: [short sentences, no jargon, ...].
+Sign off: [your usual closing].
+
+Write an email to [person] about [topic].</pre></div><p>Run it once, then add &ldquo;match the voice of the two emails below&rdquo; and paste two of yours. Compare.</p></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Task">
+    <div class="slide-inner">
+      <span class="kicker">T &middot; Task</span>
+      <h1 class="headline">Task &mdash; Why Precision Matters</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">The task is the specific job to do. A vague task gets a vague result &mdash; and the model can&rsquo;t read your mind. Precision means <b>an action verb + the exact deliverable + its purpose</b>.</p>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Vague task</span><p><b>Prompt:</b> &ldquo;Write something for my movie.&rdquo;</p><p class="out pre poem">Sure! I&rsquo;d be happy to help. Here are some ideas: a poem, a dialogue, a script outline or a song. What would you like? Let me know the genre, length and style and I&rsquo;ll get started!</p></div><div class="compare-card strong"><span class="clbl">Precise task</span><p><b>Prompt:</b> &ldquo;<mark class='hl'>Write the mukhda &mdash; the opening four lines &mdash; of a romantic duet for my new Bollywood film.</mark>&rdquo;</p><p class="out pre poem">तेरे बिना ये शहर अधूरा लगता है,
+तू साथ हो तो हर लम्हा पूरा लगता है।
+ये बारिशें भी तेरा नाम दोहराती हैं,
+हवा भी तेरा ही पैग़ाम सुनाती है।</p></div></div>
+      <div class="two-col" style="margin-top:0.8rem;">
+        <div class="mini-card bad"><span class="mc-lbl">Everyday version &middot; vague</span>&ldquo;Make me dinner.&rdquo; &rarr; <i>&ldquo;Sure! How about pasta?&rdquo;</i></div>
+        <div class="mini-card good"><span class="mc-lbl">Everyday version &middot; precise</span>&ldquo;Plan a 3-course vegetarian dinner for 6 guests, under &#8377;2,000, ready in 90 minutes.&rdquo; &rarr; <i>Starter, main and dessert, with costs.</i></div>
+      </div>
+      <p class="ai-note">AI-generated samples for illustration, in the style of the role &mdash; not written by the person named.</p>
+      <p class="why-line"><b>The gap:</b> same model, same minute. One answer asks questions back; the other delivers the exact piece you needed. Say <b>what</b>, <b>how much</b> and <b>what for</b>.</p>
+      <div class="try-box"><span class="tb-h">Try it &middot; 3 minutes</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Rewrite this vague task into a precise one (verb + deliverable + purpose):
+
+"Help me with my presentation."
+
+Run both versions and compare.</pre></div><p>Does your version say <b>what to produce</b> and <b>what it is for</b>?</p></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Context: the film">
+    <div class="slide-inner">
+      <span class="kicker">C &middot; Context &middot; 1 of 2</span>
+      <h1 class="headline">Context &mdash; The Story Behind the Song</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">Context is the background the model can&rsquo;t know. For a film song, the <b>plot, the character and the scene it plays in</b> decide every word.</p>
+      <div class="mini-card" style="margin-bottom:0.8rem;"><span class="mc-lbl">The context we add</span><b>Film:</b> a 1980s love story set in Lucknow. <b>Character:</b> Zoya, a shy librarian who writes letters she never posts. <b>Situation:</b> the song plays on a rainy morning as she finally mails her first letter, while Arjun&rsquo;s train pulls out of the station.</div>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Role + task, no context</span><p><b>Prompt:</b> &ldquo;Imagine you are Javed Akhtar&hellip; Write the mukhda of a romantic song for my new film.&rdquo;</p><p class="out pre poem">शाम ढली तो परछाइयाँ लंबी हो गईं,
+कुछ बातें थीं जो होंठों तक आकर खो गईं।
+तेरे बिना ये रास्ते कुछ और ही लगने लगे,
+हर मोड़ पर हम ख़ुद को ही ढूँढने लगे।</p></div><div class="compare-card strong"><span class="clbl">Role + task + context</span><p><b>Prompt:</b> &ldquo;Imagine you are Javed Akhtar&hellip; Write the mukhda of a romantic song for my new film. <mark class='hl'>Film: a 1980s love story in Lucknow. Zoya is a shy librarian who writes letters she never posts. The song plays as she finally mails her first letter on a rainy morning while Arjun&rsquo;s train leaves.</mark>&rdquo;</p><p class="out pre poem">भीगे लिफ़ाफ़े में रख दी है दिल की बात,
+जो कह न सकी ज़ुबाँ, वो कह गई बरसात।
+सीटी की गूँज में खोया है साथ,
+पटरी पे रह गई बस इक मुलाक़ात।</p></div></div>
+      <p class="ai-note">AI-generated samples for illustration, in the style of the role &mdash; not written by the person named.</p>
+      <p class="why-line"><b>Why it works:</b> the first song could be in any film. The second could only be in <i>this</i> one &mdash; letters, rain, the platform. Context turns generic into specific.</p>
+
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Context: sales">
+    <div class="slide-inner">
+      <span class="kicker">C &middot; Context &middot; 2 of 2</span>
+      <h1 class="headline">Context &mdash; The Same Idea in Sales</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">In business, context is what turns a generic message into one the client actually reads: who they are, what they said, and what happens next.</p>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Without context</span><p><b>Prompt:</b> &ldquo;Write a follow-up email after our product demo.&rdquo;</p><p class="out pre">Hi,
+Thank you for taking the time to attend our demo. Please let us know if you have any questions or would like to schedule a follow-up.
+Best regards</p></div><div class="compare-card strong"><span class="clbl">With context</span><p><b>Prompt:</b> &ldquo;Write a follow-up email after our product demo. <mark class='hl'>Context: the client is Nisha Verma, COO of a 200-store pharmacy chain. In the demo she worried about integration with their old billing system and asked about pricing for 200 stores. Our pilot takes 3 weeks. She decides by month-end.</mark>&rdquo;</p><p class="out pre">Hi Nisha,
+Thanks for the sharp questions yesterday &mdash; especially on the billing system. We&rsquo;ve integrated with similar legacy setups; I&rsquo;ve attached a one-page note on how.
+For 200 stores I&rsquo;ll send a tiered quote by Thursday, and a 3-week pilot in two stores would let you test everything before your month-end decision.
+Would Tuesday work for a 20-minute call?</p></div></div>
+      <p class="why-line"><b>Context checklist:</b> who is it for &middot; what happened &middot; which facts and numbers &middot; what is the goal &middot; what happens next.</p>
+      <div class="try-box"><span class="tb-h">Try it &middot; 4 minutes</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Take a real message you need to write this week.
+Version 1: only the task.
+Version 2: add four facts the AI could not possibly know (who, what happened, numbers, goal).
+
+Run both.</pre></div><p>Notice how the answer stops being generic and starts sounding like <b>your</b> situation.</p></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Constraint: song structure">
+    <div class="slide-inner">
+      <span class="kicker">C &middot; Constraint &middot; 1 of 2</span>
+      <h1 class="headline">Constraint &mdash; How the Song Is Built</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">Constraints are the rules the answer must respect. For a song: its structure, rhyme, length, language &mdash; and what to avoid.</p>
+      <div class="loop" style="margin:0.2rem 0 0.7rem;"><span class="lp" style="animation:none">Mukhda &middot; 4 lines &middot; AABB</span><span class="la">&rarr;</span><span class="lp" style="animation:none">Antara 1 &middot; 6 lines</span><span class="la">&rarr;</span><span class="lp" style="animation:none">Antara 2 &middot; 6 lines</span><span class="la">&rarr;</span><span class="lp" style="animation:none">Hook repeats</span></div>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Without constraints</span><p><b>Prompt:</b> &ldquo;&hellip; [role, task and context included]&rdquo;</p><p class="out pre poem">भीगे लिफ़ाफ़े में रख दी है दिल की बात,
+जो कह न सकी ज़ुबाँ, वो कह गई बरसात।
+सीटी की गूँज में खोया है साथ,
+पटरी पे रह गई बस इक मुलाक़ात।
+प्यार की ये चिट्ठी, ज़िंदगी भर का साथ,
+I will wait for you in this rain tonight।
+(6 lines &middot; an English line &middot; &lsquo;dil&rsquo;, &lsquo;pyaar&rsquo;, &lsquo;zindagi&rsquo;)</p></div><div class="compare-card strong"><span class="clbl">With constraints</span><p><b>Prompt:</b> &ldquo;&hellip; <mark class='hl'>Constraints: exactly 4 lines, rhyme scheme AABB, Hindi only with no English words, and avoid clich&eacute;s like &lsquo;dil&rsquo;, &lsquo;zindagi&rsquo; and &lsquo;pyaar&rsquo;.</mark>&rdquo;</p><p class="out pre poem">भीगे लिफ़ाफ़े में रख दी है इक बात,
+जो कह न सकी ज़ुबाँ, वो कह गई बरसात।
+सीटी की गूँज में खोया है साथ,
+पटरी पे रह गई बस इक मुलाक़ात।
+(4 lines &middot; AABB &middot; Hindi only &middot; no clich&eacute;s)</p></div></div>
+      <p class="ai-note">AI-generated samples for illustration, in the style of the role &mdash; not written by the person named.</p>
+      <p class="why-line"><b>Why it works:</b> a good song has a shape. Constraints give the model the <b>shape, the limits and the &ldquo;don&rsquo;ts&rdquo;</b> a lyricist would carry in their head.</p>
+
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Constraint: HR">
+    <div class="slide-inner">
+      <span class="kicker">C &middot; Constraint &middot; 2 of 2</span>
+      <h1 class="headline">Constraint &mdash; The Same Idea in HR</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">In business, constraints protect you: from rambling, from risky claims, from broken policy. Here is an interview rejection email.</p>
+      <div class="two-col reveal-grid"><div class="compare-card"><span class="clbl">Without constraints</span><p><b>Prompt:</b> &ldquo;Write an email rejecting a candidate after an interview.&rdquo;</p><p class="out pre">Dear Rahul,
+Thank you for interviewing with us. Unfortunately we found your communication skills lacking and you seemed too junior for the role. We will keep your CV on file and contact you when a suitable position opens up in the future.
+(Gives a reason &middot; promises future roles &middot; too long)</p></div><div class="compare-card strong"><span class="clbl">With constraints</span><p><b>Prompt:</b> &ldquo;Write an email rejecting a candidate after an interview. <mark class='hl'>Constraints: under 90 words; warm and respectful; give no reason beyond &lsquo;we chose a candidate whose experience matched more closely&rsquo;; do not promise future roles; offer feedback only if they ask.</mark>&rdquo;</p><p class="out pre">Dear Rahul,
+Thank you for the time you invested in interviewing with us. After careful consideration, we&rsquo;ve decided to move forward with a candidate whose experience matched this role more closely.
+We appreciated your thoughtful answers and wish you every success. If you&rsquo;d like feedback, just reply to this email.
+Warm regards,
+Anita</p></div></div>
+      <p class="why-line"><b>Constraint ideas:</b> length &middot; tone &middot; what to avoid &middot; &ldquo;use only the information I give you&rdquo; &middot; &ldquo;if you don&rsquo;t know, say so&rdquo; &middot; policy rules.</p>
+      <div class="try-box"><span class="tb-h">Try it &middot; 3 minutes</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Take your last prompt and add three constraints:
+- a length limit
+- a tone (e.g. "warm, no jargon")
+- one thing it must NOT do
+
+Run it again.</pre></div><p>Constraints protect you from <b>rambling, risky claims and invented facts</b>.</p></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Format: scripts">
+    <div class="slide-inner">
+      <span class="kicker">F &middot; Format &middot; 1 of 2</span>
+      <h1 class="headline">Format &mdash; Devanagari, Roman or Urdu?</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">Format is the shape and script of the answer. Say which one you want &mdash; or the model decides for you.</p>
+      <div class="three-col reveal-grid">
+        <div class="plat-col"><h4>Devanagari</h4><span class="pc-sub">&ldquo;Write in Devanagari.&rdquo;</span><p class="out poem" style="margin:0;">भीगे लिफ़ाफ़े में रख दी है इक बात,<br>जो कह न सकी ज़ुबाँ, वो कह गई बरसात।</p></div>
+        <div class="plat-col"><h4>Roman (Hinglish)</h4><span class="pc-sub">&ldquo;Write in Roman script.&rdquo;</span><p class="out poem" style="margin:0;">Bheege lifaafe mein rakh di hai ik baat,<br>jo keh na saki zubaan, woh keh gayi barsaat.</p></div>
+        <div class="plat-col"><h4>Urdu</h4><span class="pc-sub">&ldquo;Write in Urdu script.&rdquo;</span><p class="out poem" dir="rtl" lang="ur" style="margin:0; text-align:right; font-size:1.4rem; line-height:2;">بھیگے لفافے میں رکھ دی ہے اک بات<br>جو کہہ نہ سکی زباں، وہ کہہ گئی برسات</p></div>
+      </div>
+      <div class="example-box"><span class="lbl">More format choices for the same song</span><p>Label the sections (<b>Mukhda, Antara 1</b>) &middot; add a line of <b>English meaning</b> under each couplet &middot; show <b>Roman transliteration</b> beneath the Devanagari &middot; return <b>only the lyrics</b>, no commentary.</p></div>
+      <p class="ai-note">AI-generated samples for illustration, in the style of the role &mdash; not written by the person named.</p>
+      <p class="why-line"><b>Why it works:</b> the same words are useful to different people in different scripts. A singer, a producer and a subtitle editor each need a different format &mdash; so name it.</p>
+
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Format: web search to table">
+    <div class="slide-inner">
+      <span class="kicker">F &middot; Format &middot; 2 of 2</span>
+      <h1 class="headline">Format &mdash; From a Web Search to a Table</h1>
+      <p class="lede" style="margin-bottom:0.6rem; font-size:1.15rem;">Format shines when the model searches the web for you and you need the findings in a shape you can use straight away.</p>
+      <div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Search the web for the 3 most popular electric scooters in India right now.
+Return only a table with these columns:
+Model | Price (&#8377; lakh, ex-showroom) | Claimed range (km) | One-line verdict | Source URL
+
+Use only information from the pages you found. Write N/A if something is missing.
+No text before or after the table.</pre></div>
+      <div class="two-col" style="margin-top:0.8rem;">
+        <div class="compare-card"><span class="clbl">Without a format</span><p class="out" style="font-size:1rem;">Several electric scooters are popular in India right now. Many buyers like Model A for its range and price, while Model B is known for its features and Model C for build quality. Prices vary by city and dealer, so it&rsquo;s best to check each manufacturer&rsquo;s website for the latest details&hellip;</p></div>
+        <div class="compare-card strong"><span class="clbl">With a format</span>
+          <table class="mini-table"><thead><tr><th>Model</th><th>Price (&#8377; lakh)</th><th>Range (km)</th><th>Verdict</th><th>Source</th></tr></thead>
+          <tbody><tr><td>Model A</td><td>1.2</td><td>120</td><td>Best value</td><td>site-1.com</td></tr><tr><td>Model B</td><td>1.5</td><td>150</td><td>Longest range</td><td>site-2.com</td></tr><tr><td>Model C</td><td>1.1</td><td>N/A</td><td>Most affordable</td><td>site-3.com</td></tr></tbody></table></div>
+      </div>
+      <p class="ai-note">Illustrative layout &mdash; the model names and numbers are placeholders. Your tool fills the table from the live pages it finds.</p>
+      <p class="why-line"><b>Format tips:</b> name the exact columns &middot; say what to write when data is missing (N/A) &middot; ask for <b>only</b> the table &middot; ask for the source of each row so you can check it.</p>
+      <div class="try-box"><span class="tb-h">Try it &middot; 4 minutes</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Search the web for [a topic you care about].
+Return only a table with columns: [column 1] | [column 2] | [column 3] | Source URL.
+Use only what you found. Write N/A if missing.</pre></div><p>Use a tool with web search on. Check two rows against their sources.</p></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="The prompt ladder">
+    <div class="slide-inner">
+      <span class="kicker">All five together &middot; interactive</span>
+      <h1 class="headline">The Prompt Ladder</h1>
+      <p class="lede" style="margin-bottom:0.2rem;">Climb one rung at a time and watch the same request improve. Click the steps.</p>
+      <div id="ladder"></div>
+    </div>
+  </section>
+
+  <section class="slide tight" data-part="RTCCF" data-title="Capstone: write your own">
+    <div class="slide-inner">
+      <span class="kicker">Capstone &middot; 8 minutes &middot; your own task</span>
+      <h1 class="headline">Write Your Own RTCCF Prompt</h1>
+      <p class="lede" style="margin-bottom:0.2rem; font-size:1.15rem;">First see a finished prompt, then write your own. Click <b>Ready-made example</b> to load a filled one, or <b>Start my own</b> to clear the boxes and fill them with a real task from your week.</p>
+      <div class="builder" id="builder">
+        <div>
+          <div class="bfld"><label for="b-role">Role</label><textarea id="b-role" placeholder="You are an experienced ... who ..."></textarea></div>
+          <div class="bfld"><label for="b-task">Task</label><textarea id="b-task" placeholder="Write / summarise / compare / plan ..."></textarea></div>
+          <div class="bfld"><label for="b-context">Context</label><textarea id="b-context" placeholder="Audience, situation, facts and numbers ..."></textarea></div>
+          <div class="bfld"><label for="b-constraint">Constraint</label><textarea id="b-constraint" placeholder="Length, tone, what to avoid ..."></textarea></div>
+          <div class="bfld"><label for="b-format">Format</label><textarea id="b-format" placeholder="Bullets, table, headings, email ..."></textarea></div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem;"><button class="btn primary" id="b-example" type="button">Ready-made example</button><button class="btn" id="b-clear" type="button">Start my own</button></div>
+          <p class="b-status" id="b-status"></p>
+        </div>
+        <div>
+          <span class="uc-label">Your prompt</span>
+          <pre class="b-preview empty" id="b-preview">Your prompt appears here as you type&hellip;</pre>
+          <div style="margin-top:0.6rem;"><button class="btn primary" id="b-copy" type="button">Copy my prompt</button></div>
+          <p class="note-small" id="b-attach" style="margin-top:0.5rem;">Using a file? Attach it in your AI tool before you send the prompt.</p>
+          <ul class="check-list">
+            <li>Run it. Does the answer follow every constraint?</li>
+            <li>Is the format something you could use straight away?</li>
+            <li>Don&rsquo;t start over &mdash; reply with a tweak: &ldquo;shorter&rdquo;, &ldquo;add risks&rdquo;, &ldquo;for a CFO&rdquo;.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="RAG" data-title="RAG problem">
+    <div class="slide-inner">
+      <span class="kicker">Part 5 &middot; RAG</span>
+      <h1 class="headline">The Problem: A Closed-Book Exam</h1>
+      <div class="story-quote">RTCCF makes the AI answer <i>better</i>. RAG makes it answer <i>correctly</i> &mdash; with your own information.</div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <p class="lede" style="font-size:1.2rem;">An LLM&rsquo;s knowledge freezes at training time. It has never seen your HR policy, your product manual or this quarter&rsquo;s numbers &mdash; and when it doesn&rsquo;t know, it can still answer confidently.</p>
+          <div class="domain-grid" style="grid-template-columns:1fr; margin-top:0.5rem;">
+            <div class="domain-card"><span class="dlabel">Frozen knowledge</span><p>It knows nothing after its training cut-off.</p></div>
+            <div class="domain-card"><span class="dlabel">No access to your files</span><p>Your policies, contracts and data were never in the library.</p></div>
+            <div class="domain-card"><span class="dlabel">Confident guessing</span><p>A closed-book exam with no &ldquo;I don&rsquo;t know&rdquo; option.</p></div>
+          </div>
+        </div>
+        <div class="mini-card bad" style="font-size:1.05rem;"><span class="mc-lbl">Asking without the document</span>
+          <div class="chat-bubble" style="margin-bottom:0.6rem;">You: &ldquo;How many casual leave days do I get at my company?&rdquo;</div>
+          <div class="chat-bubble reply">AI: &ldquo;Most companies offer 8&ndash;10 casual leave days a year, so you likely get around 10.&rdquo;</div>
+          <p style="margin:0.8rem 0 0; font-size:0.98rem;">Sounds confident. But it has never read your policy &mdash; it is guessing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="RAG" data-title="How RAG works">
+    <div class="slide-inner">
+      <span class="kicker">Retrieval-Augmented Generation</span>
+      <h1 class="headline">Turning It Into an Open-Book Exam</h1>
+      <div class="cycler" id="cy-rag">
+        <div class="cycler-stage">
+          <span class="cycler-label" data-stage-label>Step 1 of 6</span>
+          <div class="phase active"><div style="width:100%"><div class="stagger"><div class="doc-lines"><span style="width:100%"></span><span style="width:92%"></span><span style="width:97%"></span><span style="width:60%"></span><span style="width:100%"></span><span style="width:88%"></span></div></div>
+            <p class="scene-cap"><b>1 &middot; Your documents</b> &mdash; the HR policy, a manual, last quarter&rsquo;s report.</p></div></div>
+          <div class="phase"><div style="width:100%"><div class="chunk-row stagger"><span class="chunk"><small>chunk 1</small>Leave policy</span><span class="chunk"><small>chunk 2</small>Casual leave: 12 days</span><span class="chunk"><small>chunk 3</small>Travel claims</span><span class="chunk"><small>chunk 4</small>Work from home</span><span class="chunk"><small>chunk 5</small>Notice period</span></div>
+            <p class="scene-cap"><b>2 &middot; Cut into small chunks</b> and filed in a searchable index &mdash; like sticky tabs in a book.</p></div></div>
+          <div class="phase"><div style="width:100%"><div class="stagger"><div class="chat-bubble big-q">&ldquo;How many casual leaves do I get?&rdquo;</div></div>
+            <p class="scene-cap"><b>3 &middot; You ask a question.</b></p></div></div>
+          <div class="phase"><div style="width:100%"><div class="chunk-row stagger"><span class="chunk"><small>chunk 1</small>Leave policy</span><span class="chunk hit"><small>chunk 2 &middot; best match</small>Casual leave: 12 days</span><span class="chunk"><small>chunk 3</small>Travel claims</span><span class="chunk"><small>chunk 4</small>Work from home</span></div>
+            <p class="scene-cap"><b>4 &middot; Retrieve</b> the chunks that best match the question &mdash; she opens the book at the right page.</p></div></div>
+          <div class="phase"><div style="width:100%"><div class="stagger"><div class="mini-card"><span class="mc-lbl">The prompt the model actually receives</span>Answer the question using only this passage: <b>&ldquo;Section 4.2 &mdash; Employees are entitled to 12 casual leave days per calendar year.&rdquo;</b><br>Question: How many casual leaves do I get?</div></div>
+            <p class="scene-cap"><b>5 &middot; Augment the prompt</b> &mdash; your question and the retrieved text travel together.</p></div></div>
+          <div class="phase"><div style="width:100%"><div class="stagger"><div class="chat-bubble reply">&ldquo;You&rsquo;re entitled to 12 casual leave days per year. [Source: HR Policy Manual, Section 4.2]&rdquo;</div>
+            <div class="chat-bubble" style="margin-top:0.6rem;">Not in the document? &ldquo;Insufficient information &mdash; this isn&rsquo;t covered in the provided document.&rdquo;</div></div>
+            <p class="scene-cap"><b>6 &middot; Generate</b> a grounded answer, with a citation &mdash; or an honest &ldquo;I can&rsquo;t find it&rdquo;.</p></div></div>
+          <div class="phase-dots" data-dots></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="RAG" data-title="RAG prompt, engineered">
+    <div class="slide-inner">
+      <span class="kicker">RTCCF meets RAG</span>
+      <h1 class="headline">The RAG Prompt, Fully Engineered</h1>
+      <p class="lede" style="margin-bottom:0.5rem; font-size:1.15rem;">The open-book-exam prompt, written properly &mdash; all five RTCCF parts doing their job.</p>
+<div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">You are a meticulous document-analysis assistant. You answer strictly from the provided source material, never from general knowledge or memory.
+
+Answer the question below using only the attached document, and cite the exact passage you used.
+
+Document: [attach HR_Policy_Manual.pdf]
+Question: How many casual leaves do I get?
+
+If the document does not contain the information needed, reply only with: "Insufficient information." Never answer without a citation.
+
+Cite each passage as: {"citation": "...", "page": page_number, "paragraph": paragraph_number}</pre></div>
+      <div class="rtccf-chain show" style="margin-top:1rem;"><span class="rtccf-block mini">Role</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block mini">Task</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block mini">Context</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block mini">Constraint</span><span class="rtccf-arrow">&rarr;</span><span class="rtccf-block mini">Format</span></div>
+      <p class="lede" style="font-size:1rem; margin-top:0.6rem;">The <b>constraint</b> forces an honest &ldquo;insufficient information&rdquo; instead of a guess. The <b>format</b> makes the citation something you can check &mdash; or something an app can read.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-part="RAG" data-title="Try RAG yourself">
+    <div class="slide-inner">
+      <span class="kicker">Try it &middot; 6 minutes</span>
+      <h1 class="headline">Try RAG on Your Own Document</h1>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <ol class="steps">
+            <li><b>Upload a document</b> you&rsquo;re allowed to share &mdash; a policy, a manual or a report (no confidential data).</li>
+            <li><b>Ask something that is in it.</b> Check the answer and the citation.</li>
+            <li><b>Ask something that is NOT in it.</b> A good setup says so instead of guessing.</li>
+            <li><b>Compare:</b> ask the first question in a fresh chat with no document.</li>
+          </ol>
+          <span class="uc-label">Starter prompt</span><div class="prompt-block"><button class="copy-btn" type="button">Copy</button><pre class="prompt-text">Answer using only the attached document. Cite the section or page you used. If the document does not contain the answer, reply exactly: "Not found in the document."
+
+Question: [your question]</pre></div>
+        </div>
+        <div>
+          <span class="uc-label">Tools that do RAG for you</span>
+          <ul class="platform-list">
+            <li class="best"><span class="pl-tag">Easiest &middot; built for this</span><a href="https://notebooklm.google.com" target="_blank" rel="noopener">NotebookLM</a> &mdash; upload sources and ask; every answer carries clickable citations.</li>
+            <li><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a> &mdash; attach a file to a chat, or use a Project to keep documents together.</li>
+            <li><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> &mdash; upload files in a chat, or add them to a Project.</li>
+            <li><a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a> &mdash; attach documents, or connect Drive files.</li>
+          </ul>
+          <p class="note-small">Privacy: only upload what you&rsquo;re permitted to share. Session 4 covers data safety in depth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="RAG" data-title="Why RAG matters">
+    <div class="slide-inner">
+      <span class="kicker">Why it matters</span>
+      <h1 class="headline">Accuracy, Trust, and No Guessing</h1>
+      <div class="domain-grid reveal-grid">
+        <div class="domain-card"><span class="dlabel">Accuracy &amp; trust</span><p>Answers are grounded in your actual documents, not a plausible-sounding guess.</p></div>
+        <div class="domain-card"><span class="dlabel">Citations</span><p>Every answer can point back to its exact source.</p></div>
+        <div class="domain-card"><span class="dlabel">No silent hallucination</span><p>When it&rsquo;s not in the document, the system says so.</p></div>
+        <div class="domain-card"><span class="dlabel">Works on private data</span><p>No retraining needed &mdash; your documents are looked up, not baked into the model.</p></div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="vs-table">
+          <thead><tr><th>The gap you have</th><th>The right tool</th></tr></thead>
+          <tbody>
+            <tr><td>It should follow my format, tone and steps</td><td><b>Prompting</b> (RTCCF) &mdash; free and instant</td></tr>
+            <tr><td>It needs my facts or the latest information</td><td><b>RAG</b> &mdash; look it up from my documents</td></tr>
+            <tr><td>It needs a new, permanent skill or style at scale</td><td><b>Fine-tuning</b> &mdash; retrain a model (costly; rarely first)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide cheat-slide" data-part="Wrap-Up" data-title="Cheat sheet">
+    <div class="slide-inner">
+      <span class="kicker">Take-home &middot; Session 2 cheat sheet</span>
+      <h1 class="headline" style="font-size:clamp(1.8rem,3.2vw,2.6rem);">Prompt Engineering &mdash; One Page</h1>
+      <div class="cheat">
+        <div class="ch-box"><h5>1 &middot; The idea</h5><ul><li>A prompt is the <b>brief</b> you give a smart, literal new hire.</li><li>Training taught the model to follow requests; your prompt <b>steers</b> it.</li><li>Vague in &rarr; generic out.</li></ul></div>
+        <div class="ch-box"><h5>2 &middot; RTCCF template</h5><ul><li><code>Role:</code> You are a&hellip;</li><li><code>Task:</code> Write / compare / classify&hellip;</li><li><code>Context:</code> audience, facts, goal</li><li><code>Constraints:</code> length, tone, never&hellip;</li><li><code>Format:</code> bullets, table, headings</li></ul></div>
+        <div class="ch-box"><h5>3 &middot; Role &amp; Task</h5><ul><li>&ldquo;You are an experienced [job] who [speciality].&rdquo;</li><li>&ldquo;Explain it to a [audience].&rdquo;</li><li>Start with a verb. <b>One job per prompt.</b></li></ul></div>
+        <div class="ch-box"><h5>4 &middot; Context checklist</h5><ul><li>Who is it for?</li><li>What&rsquo;s the situation?</li><li>Which facts and numbers?</li><li>What was already tried?</li><li>What is the goal?</li></ul></div>
+        <div class="ch-box"><h5>5 &middot; Constraints &amp; format</h5><ul><li>Length &middot; tone &middot; what to avoid.</li><li>&ldquo;Use only the information I give you.&rdquo;</li><li>&ldquo;If you don&rsquo;t know, say so.&rdquo;</li><li>Ask for a table, bullets or headings &mdash; and name them.</li></ul></div>
+        <div class="ch-box"><h5>6 &middot; Iterate, don&rsquo;t restart</h5><ul><li>Write &rarr; Run &rarr; Inspect &rarr; Refine.</li><li>Reply with a tweak: &ldquo;shorter&rdquo;, &ldquo;add risks&rdquo;, &ldquo;for a CFO&rdquo;.</li><li>Save prompts that work.</li></ul></div>
+        <div class="ch-box"><h5>7 &middot; Many jobs, one model</h5><ul><li>Summarise &middot; classify &middot; extract &middot; translate &middot; draft &middot; analyse &middot; code &middot; brainstorm.</li><li>Add 2&ndash;3 examples to teach a pattern.</li></ul></div>
+        <div class="ch-box"><h5>8 &middot; RAG prompt</h5><ul><li>&ldquo;Answer only from the attached document.&rdquo;</li><li>&ldquo;Cite the section or page.&rdquo;</li><li>&ldquo;If it isn&rsquo;t there, say &lsquo;Not found&rsquo;.&rdquo;</li></ul></div>
+        <div class="ch-box"><h5>9 &middot; Stay safe</h5><ul><li>No confidential data in public tools.</li><li>Tuning reduces bias and errors; it doesn&rsquo;t remove them &mdash; <b>review</b> what matters.</li><li>(Session 4 goes deeper.)</li></ul></div>
+      </div>
+      <div class="no-print" style="display:flex; gap:0.7rem; align-items:center; flex-wrap:wrap;"><button class="btn primary" id="btn-print-cheat2" type="button">Print / save as PDF</button><span class="note-small" style="margin:0;">Prints this page only.</span></div>
+    </div>
+  </section>
+
+  <section class="slide" data-part="Wrap-Up" data-title="Recap & next">
+    <div class="slide-inner">
+      <span class="kicker">Full circle</span>
+      <h1 class="headline">From Vague Asks to Engineered Prompts</h1>
+      <p class="lede">You saw why prompts work, how to steer a model with five simple parts, and how to ground it in your own documents.</p>
+      <div class="pillars reveal-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="pillar"><span class="pnum">01</span><h4>Prompts steer a trained model</h4><p>Training taught it to follow requests; your words choose the voice and the job.</p></div>
+        <div class="pillar"><span class="pnum">02</span><h4>RTCCF makes it repeatable</h4><p>Role, Task, Context, Constraint, Format &mdash; a brief, not a guess.</p></div>
+        <div class="pillar"><span class="pnum">03</span><h4>RAG makes it correct</h4><p>Give it your documents, and make it cite them.</p></div>
+      </div>
+      <div class="closing-cols">
+        <div><div class="cc-head">Homework &middot; 10 minutes</div><p style="color:var(--ink-soft); font-size:1.12rem; line-height:1.5;">Pick <b>one task you repeat every week</b>. Write its RTCCF prompt, improve it twice, and save it. Bring it to Session 3.</p></div>
+        <div><div class="cc-head">Where we&rsquo;re headed &mdash; Session 3</div><p style="color:var(--ink-soft); font-size:1.12rem; line-height:1.5;">Sat 31 Oct &mdash; <b>Advanced AI, Prompting Like a Pro.</b> Examples, step-by-step reasoning, multi-turn prompting and more.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide center" data-part="Wrap-Up" data-title="Q&A">
+    <div class="slide-inner" style="text-align:center;">
+      <span class="kicker" style="justify-content:center;">Open floor &middot; 15 minutes</span>
+      <h1 class="headline" style="font-size:clamp(3rem,7vw,5.5rem);">Questions?</h1>
+      <p class="lede" style="margin-left:auto; margin-right:auto;">Nothing is too basic. If it&rsquo;s on your mind, it&rsquo;s on someone else&rsquo;s too.</p>
+      <div class="chip-row" style="justify-content:center;">
+        <span class="rel-chip">Why did my prompt not work?</span>
+        <span class="rel-chip">Which tool should I use for RAG?</span>
+        <span class="rel-chip">Can I trust the answers?</span>
+        <span class="rel-chip">How do I save prompts that work?</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="topbar"><span> Session 2</span><span id="partLabel">Orientation</span></div>
+
+<div id="navbar">
+  <button class="navbtn" id="btnToc">Contents</button>
+  <button class="navbtn" id="btnPrev">&larr; Prev</button>
+  <div class="progress-wrap"><div class="progress-fill" id="progFill"></div></div>
+  <span class="slide-count" id="slideCount">1 / 1</span>
+  <button class="navbtn" id="btnNext">Next &rarr;</button>
+</div>
+
+<div id="tocveil"></div>
+<nav id="toc"></nav>
+
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var idx = 0;
+  var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var progFill = document.getElementById('progFill');
+  var slideCount = document.getElementById('slideCount');
+  var partLabel = document.getElementById('partLabel');
+  var toc = document.getElementById('toc');
+  var tocVeil = document.getElementById('tocveil');
+
+  // build TOC grouped by data-part
+  var parts = {};
+  var order = [];
+  slides.forEach(function(s, i){
+    var p = s.dataset.part;
+    if(!parts[p]){ parts[p] = []; order.push(p); }
+    parts[p].push({ i:i, title:s.dataset.title || p });
+  });
+  order.forEach(function(p){
+    var h = document.createElement('h3'); h.textContent = p; toc.appendChild(h);
+    parts[p].forEach(function(item){
+      var b = document.createElement('button');
+      b.className = 'toc-item'; b.textContent = item.title; b.dataset.i = item.i;
+      b.addEventListener('click', function(){ goTo(item.i); closeToc(); });
+      toc.appendChild(b);
+    });
+  });
+
+  function updateTocHighlight(){
+    toc.querySelectorAll('.toc-item').forEach(function(b){
+      b.classList.toggle('current', parseInt(b.dataset.i,10) === idx);
+    });
+  }
+
+  // ---- cyclers (phase-based animated demos) ----
+  function setupCycler(container){
+    var phases = container.querySelectorAll('.phase');
+    var dotsWrap = container.querySelector('[data-dots]');
+    var label = container.parentElement.querySelector('[data-stage-label]') || container.querySelector('[data-stage-label]');
+    var labels = [];
+    // derive labels from cycler-label default text pattern "Step X of N &mdash; <name>" already hardcoded per phase via data attr fallback
+    var current = 0;
+    var timer = null;
+
+    dotsWrap.innerHTML = '';
+    phases.forEach(function(_, i){
+      var d = document.createElement('button');
+      d.className = 'pdot'; d.type = 'button';
+      d.addEventListener('click', function(){ show(i); resetTimer(); });
+      dotsWrap.appendChild(d);
+    });
+    var dots = dotsWrap.querySelectorAll('.pdot');
+
+    function show(n){
+      phases.forEach(function(p,i){ p.classList.toggle('active', i===n); });
+      dots.forEach(function(d,i){ d.classList.toggle('active', i===n); });
+      current = n;
+      if(label){
+        var stageEls = container.querySelectorAll('.phase');
+        label.textContent = 'Step ' + (n+1) + ' of ' + stageEls.length;
+      }
+      var active = phases[n];
+      if(active){
+        void active.offsetWidth;
+        active.querySelectorAll('animateMotion').forEach(function(am){
+          if(am.beginElement){ try{ am.beginElement(); }catch(e){} }
+        });
+      }
+    }
+    function resetTimer(){
+      if(timer) clearInterval(timer);
+      if(!REDUCE){
+        timer = setInterval(function(){ show((current+1) % phases.length); }, 2800);
+      }
+    }
+    show(0);
+    resetTimer();
+    container._stop = function(){ if(timer) clearInterval(timer); };
+  }
+
+  var cyclerEls = document.querySelectorAll('.cycler');
+  cyclerEls.forEach(function(c){ /* init lazily on activation */ });
+
+  function activateSlideExtras(slide){
+    // timeline stagger reveal
+    var tl = slide.querySelector('.timeline-anim');
+    if(tl){ tl.classList.remove('show'); void tl.offsetWidth; tl.classList.add('show'); }
+    // rtccf chain
+    var chain = slide.querySelector('.rtccf-chain');
+    if(chain){ chain.classList.remove('show'); void chain.offsetWidth; chain.classList.add('show'); }
+    // generic card/list grids
+    var reveals = slide.querySelectorAll('.reveal-grid');
+    reveals.forEach(function(el){ el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); });
+    // cyclers
+    var cyclers = slide.querySelectorAll('.cycler');
+    cyclers.forEach(function(cy){
+      if(cy._stop) cy._stop();
+      setupCycler(cy);
+    });
+  }
+  function deactivateSlideExtras(slide){
+    var cyclers = slide.querySelectorAll('.cycler');
+    cyclers.forEach(function(cy){ if(cy._stop) cy._stop(); });
+  }
+
+  function goTo(i){
+    if(i < 0) i = 0;
+    if(i > slides.length-1) i = slides.length-1;
+    if(i === idx && slides[idx].classList.contains('active')) return;
+    deactivateSlideExtras(slides[idx]);
+    slides[idx].classList.remove('active');
+    idx = i;
+    var s = slides[idx];
+    s.classList.add('active');
+    s.scrollTop = 0;
+    progFill.style.width = ((idx+1)/slides.length*100) + '%';
+    slideCount.textContent = (idx+1) + ' / ' + slides.length;
+    partLabel.textContent = s.dataset.part;
+    updateTocHighlight();
+    activateSlideExtras(s);
+  }
+  function next(){ goTo(idx+1); }
+  function prev(){ goTo(idx-1); }
+
+  document.getElementById('btnNext').addEventListener('click', next);
+  document.getElementById('btnPrev').addEventListener('click', prev);
+  document.getElementById('btnToc').addEventListener('click', function(){ toc.classList.add('open'); tocVeil.classList.add('open'); });
+  function closeToc(){ toc.classList.remove('open'); tocVeil.classList.remove('open'); }
+  tocVeil.addEventListener('click', closeToc);
+
+  document.addEventListener('keydown', function(e){
+    var tg = e.target;
+    if(tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT' || tg.isContentEditable)) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown'){ next(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ prev(); }
+    else if(e.key === 'Escape'){ closeToc(); }
+  });
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-replay]');
+    if(btn){
+      var el = document.getElementById(btn.dataset.replay);
+      if(el){ el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); }
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    var copyBtn = e.target.closest('.copy-btn');
+    if(!copyBtn) return;
+    var block = copyBtn.closest('.prompt-block');
+    var textEl = block && block.querySelector('.prompt-text');
+    if(!textEl) return;
+    var text = textEl.textContent.replace(/^\n/, '').replace(/\n$/, '');
+    function flash(){
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+      setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 1600);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, function(){ fallbackCopy(text, flash); });
+    } else {
+      fallbackCopy(text, flash);
+    }
+  });
+  function fallbackCopy(text, onDone){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); onDone(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  // init
+  slideCount.textContent = '1 / ' + slides.length;
+  partLabel.textContent = slides[0].dataset.part;
+  updateTocHighlight();
+  activateSlideExtras(slides[0]);
+})();
+</script>
+<script>
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+  /* ================= NEXT-WORD GAME ================= */
+  (function(){
+    var g = $('nw-game'); if(!g) return;
+    var rounds = [
+      { p:'Once upon a', a:[['time',96],['midnight',2],['dream',1],['hill',1]],
+        lesson:'Almost no doubt &mdash; one word takes nearly all of the probability.' },
+      { p:'The capital of India is', a:[['New (Delhi)',94],['Delhi',4],['a',1],['located',1]],
+        lesson:'Facts concentrate probability too. This is why models are reliable on well-known things.' },
+      { p:'Thanks for your email. I will get back to you', a:[['shortly',38],['soon',27],['as',14],['by',8],['tomorrow',6],['(everything else)',7]],
+        lesson:'Several good answers. The model has to <b>choose</b> &mdash; and different runs can choose differently.' },
+      { p:'The best thing about Monday morning is', a:[['that',16],['the',13],['coffee',9],['starting',8],['when',7],['(everything else)',47]],
+        lesson:'Wide open: probability is spread out. This is where creativity &mdash; and <b>temperature</b> &mdash; come in.' }
+    ];
+    var ri = 0, shown = false;
+    function render(){
+      var r = rounds[ri];
+      var rows = r.a.map(function(x,i){
+        return '<div class="prob-row'+(i===0?' top':'')+'"><span>'+esc(x[0])+'</span><div class="prob-track"><div class="prob-fill" data-w="'+x[1]+'" style="width:0"></div></div><span>'+x[1]+'%</span></div>';
+      }).join('');
+      g.innerHTML =
+        '<div class="game-top"><span>Round '+(ri+1)+' of '+rounds.length+'</span><span>Guess first, then reveal</span></div>'+
+        '<div class="nw-prompt">'+esc(r.p)+' <span class="nw-blank">'+(shown ? esc(r.a[0][0]) : '&nbsp;&nbsp;&nbsp;&nbsp;')+'</span></div>'+
+        '<div class="nw-answers"><div class="prob-list wide" style="display:'+(shown?'flex':'none')+'">'+rows+'</div></div>'+
+        '<div class="nw-lesson'+(shown?' show':'')+'">'+r.lesson+'</div>'+
+        '<div class="nw-ctrl"><button class="btn" data-a="prev" type="button">&larr; Previous</button>'+
+        '<button class="btn primary" data-a="reveal" type="button">'+(shown?'Hide':'Reveal the model’s guesses')+'</button>'+
+        '<button class="btn" data-a="next" type="button">Next round &rarr;</button></div>';
+      if(shown){
+        setTimeout(function(){
+          g.querySelectorAll('.prob-fill').forEach(function(f){ f.style.width = f.getAttribute('data-w') + '%'; });
+        }, 40);
+      }
+    }
+    g.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-a]'); if(!b) return;
+      var a = b.getAttribute('data-a');
+      if(a==='reveal'){ shown = !shown; }
+      else if(a==='next'){ ri = (ri+1) % rounds.length; shown = false; }
+      else if(a==='prev'){ ri = (ri-1+rounds.length) % rounds.length; shown = false; }
+      render();
+    });
+    render();
+  })();
+
+  /* ================= TEMPERATURE WIDGET ================= */
+  (function(){
+    var range = $('temp-range'); if(!range) return;
+    var words = [['biryani',3.6],['food',2.9],['weather',2.2],['people',2.0],['history',1.6],['traffic',0.8],['pearls',0.4]];
+    var bars = $('temp-bars'), val = $('temp-val'), draws = $('temp-draws');
+    var probs = [];
+    function compute(T){
+      var out;
+      if(T <= 0.001){
+        var mi = 0; words.forEach(function(w,i){ if(w[1] > words[mi][1]) mi = i; });
+        out = words.map(function(w,i){ return i===mi ? 1 : 0; });
+      } else {
+        var ex = words.map(function(w){ return Math.exp(w[1]/T); });
+        var s = ex.reduce(function(a,b){ return a+b; }, 0);
+        out = ex.map(function(x){ return x/s; });
+      }
+      return out;
+    }
+    function fmt(p){ var v = p*100; return (v >= 10 || v === 0 ? v.toFixed(0) : v.toFixed(1)) + '%'; }
+    function render(){
+      var T = parseFloat(range.value);
+      val.textContent = T.toFixed(1);
+      probs = compute(T);
+      var order = words.map(function(_,i){ return i; });
+      bars.innerHTML = order.map(function(i, k){
+        var top = probs[i] === Math.max.apply(null, probs);
+        return '<div class="prob-row'+(top?' top':'')+'"><span>'+words[i][0]+'</span><div class="prob-track"><div class="prob-fill" style="width:'+(probs[i]*100)+'%"></div></div><span>'+fmt(probs[i])+'</span></div>';
+      }).join('');
+    }
+    function pick(){
+      var r = Math.random(), c = 0;
+      for(var i=0;i<probs.length;i++){ c += probs[i]; if(r <= c) return i; }
+      return probs.length-1;
+    }
+    function add(n){
+      for(var k=0;k<n;k++){
+        var chip = document.createElement('span');
+        chip.className = 'draw-chip'; chip.textContent = words[pick()][0];
+        draws.appendChild(chip);
+      }
+      while(draws.children.length > 20) draws.removeChild(draws.firstChild);
+    }
+    range.addEventListener('input', render);
+    $('temp-draw').addEventListener('click', function(){ add(1); });
+    $('temp-draw5').addEventListener('click', function(){ add(5); });
+    $('temp-clear').addEventListener('click', function(){ draws.innerHTML = ''; });
+    render();
+  })();
+
+  /* ================= VOTE TALLIES ================= */
+  document.querySelectorAll('.tally[data-opts]').forEach(function(t){
+    var opts = t.getAttribute('data-opts').split('|');
+    var n = opts.map(function(){ return 0; });
+    t.innerHTML = opts.map(function(o){
+      return '<div class="tally-row"><button type="button" class="tally-btn">'+esc(o)+'</button><div class="tally-track"><div class="tally-fill"></div></div><div class="tally-n">0</div></div>';
+    }).join('') + '<div class="tally-foot"><span>click = +1 &middot; shift-click = &minus;1</span><button type="button" class="tally-reset">Reset</button></div>';
+    function paint(){
+      var total = n.reduce(function(a,b){ return a+b; }, 0);
+      t.querySelectorAll('.tally-row').forEach(function(row,i){
+        row.querySelector('.tally-n').textContent = n[i];
+        row.querySelector('.tally-fill').style.width = (total ? n[i]/total*100 : 0) + '%';
+      });
+    }
+    t.addEventListener('click', function(e){
+      var rows = Array.prototype.slice.call(t.querySelectorAll('.tally-row'));
+      if(e.target.closest('.tally-reset')){ n = n.map(function(){ return 0; }); paint(); return; }
+      var btn = e.target.closest('.tally-btn'); if(!btn) return;
+      var i = rows.indexOf(btn.parentElement);
+      n[i] = Math.max(0, n[i] + (e.shiftKey ? -1 : 1));
+      paint();
+    });
+  });
+
+  /* ================= COST CALCULATORS ================= */
+  var TIERS = { flagship:{in:5, out:25}, mid:{in:2, out:12}, budget:{in:0.2, out:1.2} };
+  function usd(x){
+    if(x >= 1000) return '$' + Math.round(x).toLocaleString('en-US');
+    if(x >= 1) return '$' + x.toFixed(2);
+    if(x === 0) return '$0';
+    return '$' + x.toFixed(4);
+  }
+  function num(id){ var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : 0; }
+
+  (function(){
+    if(!$('est-req')) return;
+    var presets = {
+      mail:{req:1000, i:500, o:120, tier:'mid'},
+      tickets:{req:10000, i:350, o:15, tier:'budget'},
+      reports:{req:200, i:3000, o:1500, tier:'flagship'},
+      bot:{req:30000, i:1500, o:300, tier:'mid'},
+      contracts:{req:100, i:25000, o:1500, tier:'flagship'}
+    };
+    function setTier(t){
+      $('est-tier').value = t;
+      if(TIERS[t]){ $('est-pin').value = TIERS[t].in; $('est-pout').value = TIERS[t].out; }
+    }
+    function calc(){
+      var req = num('est-req'), i = num('est-in'), o = num('est-out'), pi = num('est-pin'), po = num('est-pout');
+      var per = (i*pi + o*po) / 1e6;
+      $('est-per').textContent = usd(per);
+      $('est-month').textContent = usd(per*req);
+      var rows = [['flagship','Flagship'],['mid','Mid'],['budget','Budget']].map(function(t){
+        var c = ((i*TIERS[t[0]].in + o*TIERS[t[0]].out)/1e6)*req;
+        return {k:t[0], label:t[1], cost:c};
+      });
+      var mx = Math.max.apply(null, rows.map(function(r){ return r.cost; })) || 1;
+      var cur = $('est-tier').value;
+      $('est-compare').innerHTML = rows.map(function(r){
+        return '<div class="cmp-row'+(r.k===cur?' sel':'')+'"><span>'+r.label+'</span><div class="cmp-track"><div class="cmp-fill" style="width:'+(r.cost/mx*100)+'%"></div></div><span class="cmp-val">'+usd(r.cost)+'</span></div>';
+      }).join('');
+    }
+    $('est-preset').addEventListener('change', function(){
+      var p = presets[this.value];
+      $('est-req').value = p.req; $('est-in').value = p.i; $('est-out').value = p.o; setTier(p.tier); calc();
+    });
+    $('est-tier').addEventListener('change', function(){ setTier(this.value); calc(); });
+    ['est-pin','est-pout'].forEach(function(id){ $(id).addEventListener('input', function(){ $('est-tier').value = 'custom'; calc(); }); });
+    ['est-req','est-in','est-out'].forEach(function(id){ $(id).addEventListener('input', calc); });
+    var tokensFromText = 0;
+    $('est-text').addEventListener('input', function(){
+      var t = this.value, words = (t.trim().match(/\S+/g) || []).length;
+      tokensFromText = Math.ceil(t.length/4);
+      $('est-text-out').textContent = words + ' words · ≈ ' + tokensFromText + ' tokens';
+    });
+    $('est-use').addEventListener('click', function(){ if(tokensFromText){ $('est-in').value = tokensFromText; calc(); } });
+    setTier('mid'); calc();
+  })();
+
+  (function(){
+    if(!$('opt-req')) return;
+    var levers = { model:false, trim:false, cache:false, batch:false, cap:false };
+    function cost(f){
+      var base = TIERS[$('opt-base').value];
+      var tier = f.model ? TIERS[$('opt-model-tier').value] : base;
+      var stat = num('opt-stat'), dyn = num('opt-dyn') * (f.trim ? 0.5 : 1), out = num('opt-out') * (f.cap ? 0.6 : 1);
+      var inCost = (dyn*tier.in + stat*tier.in*(f.cache ? 0.1 : 1)) / 1e6;
+      var per = inCost + out*tier.out/1e6;
+      if(f.batch) per *= 0.5;
+      return per * num('opt-req');
+    }
+    function none(){ return { model:false, trim:false, cache:false, batch:false, cap:false }; }
+    function paint(){
+      var before = cost(none()), after = cost(levers);
+      $('opt-before').textContent = usd(before);
+      $('opt-after').textContent = usd(after);
+      var pct = before ? Math.round((1 - after/before)*100) : 0;
+      $('opt-saved').textContent = pct + '% saved' + (before ? ' · ' + usd(before-after) + ' / month' : '');
+      document.querySelectorAll('.lever').forEach(function(el){
+        var k = el.getAttribute('data-lever');
+        var only = none(); only[k] = true;
+        var s = before ? Math.round((1 - cost(only)/before)*100) : 0;
+        el.querySelector('[data-save]').textContent = '−' + s + '%';
+        el.classList.toggle('on', levers[k]);
+      });
+      $('opt-bars').innerHTML =
+        '<div class="cmp-row sel"><span>Baseline</span><div class="cmp-track"><div class="cmp-fill" style="width:100%; background:var(--ink-faint)"></div></div><span class="cmp-val">'+usd(before)+'</span></div>'+
+        '<div class="cmp-row"><span>Optimised</span><div class="cmp-track"><div class="cmp-fill opt" style="width:'+(before? Math.max(after/before*100, after>0?1.5:0) : 0)+'%"></div></div><span class="cmp-val">'+usd(after)+'</span></div>';
+    }
+    document.querySelectorAll('.lever').forEach(function(el){
+      el.querySelector('input').addEventListener('change', function(){ levers[el.getAttribute('data-lever')] = this.checked; paint(); });
+      var sel = el.querySelector('select');
+      if(sel) sel.addEventListener('click', function(e){ e.stopPropagation(); });
+    });
+    ['opt-req','opt-stat','opt-dyn','opt-out'].forEach(function(id){ $(id).addEventListener('input', paint); });
+    ['opt-base','opt-model-tier'].forEach(function(id){ $(id).addEventListener('change', paint); });
+    paint();
+  })();
+
+  /* ================= LAB TIMER ================= */
+  (function(){
+    var face = $('timer-face'); if(!face) return;
+    var total = 600, left = total, tick = null;
+    function paint(){
+      var m = Math.floor(left/60), s = left % 60;
+      face.textContent = (m<10?'0':'') + m + ':' + (s<10?'0':'') + s;
+      face.classList.toggle('low', left <= 60 && left > 0);
+    }
+    function stop(){ if(tick){ clearInterval(tick); tick = null; } $('timer-go').textContent = left === 0 ? 'Start' : 'Resume'; }
+    $('timer-go').addEventListener('click', function(){
+      if(tick){ stop(); $('timer-go').textContent = 'Resume'; return; }
+      if(left === 0) left = total;
+      $('timer-go').textContent = 'Pause';
+      tick = setInterval(function(){ left--; paint(); if(left <= 0){ left = 0; paint(); stop(); } }, 1000);
+    });
+    $('timer-reset').addEventListener('click', function(){ if(tick){ clearInterval(tick); tick = null; } left = total; paint(); $('timer-go').textContent = 'Start'; });
+    paint();
+  })();
+
+  /* ================= CHEAT SHEET PRINT ================= */
+  (function(){
+    var b = $('btn-print-cheat'); if(!b) return;
+    b.addEventListener('click', function(){
+      document.body.classList.add('print-cheat');
+      setTimeout(function(){ window.print(); document.body.classList.remove('print-cheat'); }, 60);
+    });
+    window.addEventListener('afterprint', function(){ document.body.classList.remove('print-cheat'); });
+  })();
+})();
+</script>
+<script>
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ================= STAGE QUIZ ================= */
+  (function(){
+    var host = $('stage-quiz'); if(!host) return;
+    var items = [
+      { t:'It keeps rambling and continues your question instead of answering it.', a:2, why:'Stage 2 (coaching with request → answer examples) taught it to treat a prompt as an instruction.' },
+      { t:'It picked up grammar, facts and many writing styles.', a:1, why:'Stage 1: reading trillions of words while guessing the next one.' },
+      { t:'It politely declines to write an insult about a colleague.', a:3, why:'Stage 3: feedback and house rules reward helpful, safe answers.' },
+      { t:'It avoids leaning on stereotypes it saw online.', a:3, why:'Stage 3 reduces bias — reduces, not removes. Always review.' },
+      { t:'It understands what “summarise this email in two lines” means.', a:2, why:'Stage 2 showed it thousands of examples of exactly that kind of request.' }
+    ];
+    var score = 0, done = 0;
+    host.innerHTML = items.map(function(it,i){
+      return '<div class="q-row" data-i="'+i+'"><div class="qt">'+esc(it.t)+'</div><div class="q-opts">'+
+        '<button type="button" class="q-opt" data-v="1">1 · Read</button>'+
+        '<button type="button" class="q-opt" data-v="2">2 · Coach</button>'+
+        '<button type="button" class="q-opt" data-v="3">3 · Rules</button></div>'+
+        '<div class="why"></div></div>';
+    }).join('') + '<div class="q-score" id="q-score">Score: 0 / '+items.length+'</div>';
+    host.addEventListener('click', function(e){
+      var b = e.target.closest('.q-opt'); if(!b) return;
+      var row = b.closest('.q-row'); if(row.classList.contains('answered')) return;
+      var it = items[+row.getAttribute('data-i')], v = +b.getAttribute('data-v');
+      row.classList.add('answered'); done++;
+      if(v === it.a){ b.classList.add('right'); score++; }
+      else {
+        b.classList.add('wrong');
+        row.querySelector('.q-opt[data-v="'+it.a+'"]').classList.add('right');
+      }
+      row.querySelector('.why').textContent = it.why;
+      $('q-score').textContent = 'Score: ' + score + ' / ' + items.length;
+    });
+  })();
+
+  /* ================= STEERING WIDGET ================= */
+  (function(){
+    var host = $('steer'); if(!host) return;
+    var opts = [
+      { k:'Plain', s:'Tell me about Python.', p:[55,33,12], line:'“Python is a high-level programming language known for…”' },
+      { k:'Add context', s:'I’m a data analyst learning to automate reports. Tell me about Python.', p:[95,3,2], line:'“Python is a versatile language. For report automation, start with pandas and openpyxl…”' },
+      { k:'Add a role', s:'Act as a wildlife guide on a jungle safari. Tell me about Python.', p:[6,91,3], line:'“Pythons are large, non-venomous snakes found across Africa and Asia…”' },
+      { k:'Add another role', s:'Act as a comedy fan. Tell me about Python.', p:[4,2,94], line:'“Monty Python’s Flying Circus was a British comedy troupe that…”' }
+    ];
+    var labels = ['Programming language','The snake','Monty Python (comedy)'];
+    host.innerHTML =
+      '<div><span class="uc-label">Pick a prompt</span><div class="steer-btns">'+
+      opts.map(function(o,i){ return '<button type="button" class="steer-btn'+(i===0?' on':'')+'" data-i="'+i+'"><small>'+o.k+'</small>'+esc(o.s)+'</button>'; }).join('')+
+      '</div></div>'+
+      '<div><span class="uc-label">What the model thinks you mean &mdash; illustrative</span><div class="prob-list wide" id="steer-bars"></div>'+
+      '<div class="steer-out" id="steer-out"></div></div>';
+    function paint(i){
+      var o = opts[i];
+      $('steer-bars').innerHTML = labels.map(function(l,k){
+        var top = o.p[k] === Math.max.apply(null,o.p);
+        return '<div class="prob-row'+(top?' top':'')+'"><span>'+l+'</span><div class="prob-track"><div class="prob-fill" style="width:'+o.p[k]+'%"></div></div><span>'+o.p[k]+'%</span></div>';
+      }).join('');
+      $('steer-out').innerHTML = '<small>Likely opening of the answer</small>'+o.line;
+      host.querySelectorAll('.steer-btn').forEach(function(b,k){ b.classList.toggle('on', k===i); });
+    }
+    host.addEventListener('click', function(e){
+      var b = e.target.closest('.steer-btn'); if(b) paint(+b.getAttribute('data-i'));
+    });
+    paint(0);
+  })();
+
+  /* ================= PROMPT LADDER ================= */
+  (function(){
+    var host = $('ladder'); if(!host) return;
+    var parts = {
+      R:'Imagine you are Javed Akhtar, the legendary poet and lyricist known for deep, poetic songwriting.',
+      T:'Write the mukhda — the opening four lines — of a romantic song for my new Bollywood film.',
+      C:'Context: A 1980s love story set in Lucknow. Zoya is a shy librarian who writes letters she never posts. The song plays on a rainy morning as she finally mails her first letter while Arjun’s train pulls out of the station.',
+      K:'Constraints: Exactly 4 lines, rhyme scheme AABB, Hindi only with no English words. Avoid clichés like ‘dil’, ‘zindagi’ and ‘pyaar’.',
+      F:'Format: Write in Devanagari. Under each line add the Roman transliteration and a one-line English meaning. Label the section MUKHDA.'
+    };
+    var steps = [
+      { name:'1 · Task only', inc:['T'], add:'T', note:'<b>Just a task.</b> It works, but the lyrics are the most average ones it has ever seen.',
+        out:'तेरे बिना दिल लगता नहीं,\nतू ही मेरी ज़िंदगी, ज़िंदगी…\nप्यार प्यार प्यार, तू ही प्यार,\nदिल मेरा बेक़रार, बेक़रार।' },
+      { name:'2 · + Role', inc:['R','T'], add:'R', note:'<b>Role chose a voice</b> — imagery and restraint — but the song is still about nothing in particular.',
+        out:'शाम ढली तो परछाइयाँ लंबी हो गईं,\nकुछ बातें थीं जो होंठों तक आकर खो गईं।\nतेरे बिना ये रास्ते कुछ और ही लगने लगे,\nहर मोड़ पर हम ख़ुद को ही ढूँढने लगे।' },
+      { name:'3 · + Context', inc:['R','T','C'], add:'C', note:'<b>Context made it about your film</b> — letters, rain, the platform — but it overran and broke style rules.',
+        out:'भीगे लिफ़ाफ़े में रख दी है दिल की बात,\nजो कह न सकी ज़ुबाँ, वो कह गई बरसात।\nसीटी की गूँज में खोया है साथ,\nपटरी पे रह गई बस इक मुलाक़ात।\nप्यार की ये चिट्ठी, ज़िंदगी भर का साथ,\nI will wait for you in this rain tonight।' },
+      { name:'4 · + Constraint', inc:['R','T','C','K'], add:'K', note:'<b>Constraints shaped it:</b> four lines, AABB, Hindi only, no clichés.',
+        out:'भीगे लिफ़ाफ़े में रख दी है इक बात,\nजो कह न सकी ज़ुबाँ, वो कह गई बरसात।\nसीटी की गूँज में खोया है साथ,\nपटरी पे रह गई बस इक मुलाक़ात।' },
+      { name:'5 · + Format', inc:['R','T','C','K','F'], add:'F', note:'<b>Format made it usable:</b> Devanagari, Roman and English meaning, clearly labelled.',
+        out:'MUKHDA\nभीगे लिफ़ाफ़े में रख दी है इक बात,\nBheege lifaafe mein rakh di hai ik baat,\n(One thought sealed in a wet envelope)\n\nजो कह न सकी ज़ुबाँ, वो कह गई बरसात।\nJo keh na saki zubaan, woh keh gayi barsaat.\n(What her tongue could not say, the rain said)\n\n… and two more lines in the same layout' }
+    ];
+    host.innerHTML =
+      '<div class="ladder-steps" id="lad-steps">'+steps.map(function(s,i){ return '<button type="button" class="lad-btn" data-i="'+i+'">'+s.name+'</button>'; }).join('')+'</div>'+
+      '<div class="ladder"><div class="lad-card"><span class="lc-h">The prompt</span><pre class="lad-prompt" id="lad-prompt"></pre>'+
+      '<div class="meter"><div id="lad-meter"></div></div><span class="dial-note">how specific the brief is</span></div>'+
+      '<div class="lad-card"><span class="lc-h">Illustrative output</span><p class="lad-out" id="lad-out"></p></div></div>'+
+      '<p class="lad-note" id="lad-note"></p>';
+    var order = ['R','T','C','K','F'];
+    function paint(i){
+      var s = steps[i];
+      $('lad-prompt').innerHTML = order.filter(function(k){ return s.inc.indexOf(k) > -1; }).map(function(k){
+        var t = esc(parts[k]); return k === s.add && i > 0 ? '<span class="new">'+t+'</span>' : t;
+      }).join('\n\n');
+      $('lad-out').textContent = s.out;
+      $('lad-meter').style.width = ((i+1)/steps.length*100) + '%';
+      $('lad-note').innerHTML = s.note;
+      host.querySelectorAll('.lad-btn').forEach(function(b,k){ b.classList.toggle('on', k===i); b.classList.toggle('done', k<i); });
+    }
+    host.addEventListener('click', function(e){ var b = e.target.closest('.lad-btn'); if(b) paint(+b.getAttribute('data-i')); });
+    paint(0);
+  })();
+
+  /* ================= RTCCF BUILDER ================= */
+  (function(){
+    var host = $('builder'); if(!host) return;
+    var f = { R:$('b-role'), T:$('b-task'), C:$('b-context'), K:$('b-constraint'), F:$('b-format') };
+    var prev = $('b-preview');
+    var sample = {
+      R:'You are a Sales Analyst with 10 years of experience.',
+      T:'Find out why our sales are low.',
+      C:'I am providing you the sales data, stored in sales_data.xlsx.',
+      K:'Use only this file as your knowledge source. Do not use outside assumptions.',
+      F:'Use charts to explain your findings, and build a dashboard to report your analysis.'
+    };
+    function compose(){
+      var lines = [];
+      if(f.R.value.trim()) lines.push(f.R.value.trim());
+      if(f.T.value.trim()) lines.push(f.T.value.trim());
+      if(f.C.value.trim()) lines.push('Context: ' + f.C.value.trim());
+      if(f.K.value.trim()) lines.push('Constraints: ' + f.K.value.trim());
+      if(f.F.value.trim()) lines.push('Format: ' + f.F.value.trim());
+      return lines.join('\n\n');
+    }
+    function paint(){
+      var t = compose();
+      prev.textContent = t || 'Your prompt appears here as you type…';
+      prev.classList.toggle('empty', !t);
+    }
+    Object.keys(f).forEach(function(k){ f[k].addEventListener('input', paint); });
+    var status = $('b-status');
+    function say(t){ if(status) status.textContent = t; }
+    $('b-example').addEventListener('click', function(){ Object.keys(f).forEach(function(k){ f[k].value = sample[k]; }); paint(); say('Ready-made example loaded: a sales analysis. Read each box, then click Start my own.'); });
+    $('b-clear').addEventListener('click', function(){ Object.keys(f).forEach(function(k){ f[k].value = ''; }); paint(); say('Your turn: fill the five boxes with a real task from your week.'); f.R.focus(); });
+    $('b-copy').addEventListener('click', function(){
+      var t = compose(); if(!t) return;
+      var btn = this;
+      function flash(){ btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = 'Copy my prompt'; }, 1600); }
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(flash, function(){}); }
+      else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); flash(); }catch(e){} document.body.removeChild(ta); }
+    });
+    paint();
+  })();
+
+  /* ================= TABS ================= */
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('.tab-btn[data-tab]'); if(!b) return;
+    var host = b.closest('.tabs-host'); if(!host) return;
+    var t = b.getAttribute('data-tab');
+    host.querySelectorAll('.tab-btn').forEach(function(x){ x.classList.toggle('on', x === b); });
+    host.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-panel') === t); });
+  });
+
+  /* ================= CHEAT SHEET PRINT ================= */
+  (function(){
+    var b = $('btn-print-cheat2'); if(!b) return;
+    b.addEventListener('click', function(){
+      document.body.classList.add('print-cheat');
+      setTimeout(function(){ window.print(); document.body.classList.remove('print-cheat'); }, 60);
+    });
+    window.addEventListener('afterprint', function(){ document.body.classList.remove('print-cheat'); });
+  })();
+})();
+</script>
